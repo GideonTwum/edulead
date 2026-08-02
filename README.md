@@ -56,6 +56,56 @@ npm run db:seed
 npm run dev
 ```
 
+## Git and GitHub
+
+This repository uses Git with environment secrets kept out of version control.
+
+- Never commit `.env`, `.env.local`, or other local env files.
+- Use `.env.example` as the variable template only.
+- Supabase bucket and RLS templates live in `supabase/`.
+- Client reference materials in `project reference folder/` are intentionally excluded from Git.
+
+To connect a new clone to GitHub after creating an empty repository:
+
+```bash
+git branch -M main
+git remote add origin <GITHUB_REPOSITORY_URL>
+git push -u origin main
+```
+
+## Supabase Policy Files
+
+Infrastructure templates are version-controlled under `supabase/`:
+
+| Path | Purpose |
+|------|---------|
+| `supabase/setup/buckets.md` | Bucket configuration |
+| `supabase/policies/database-rls.sql` | Database RLS policies |
+| `supabase/policies/storage-rls.sql` | Storage object policies |
+| `supabase/README.md` | Application order and warnings |
+
+Apply after `npm run db:push` on a new Supabase project. Review schema compatibility before executing SQL in production.
+
+The app primarily uses Prisma and server-side service-role access; RLS is defense in depth for direct Supabase client access.
+
+## Database Migrations
+
+```bash
+# Push schema to database (current local/staging workflow)
+npm run db:push
+
+# Or use migrations for production once a baseline exists
+npm run db:migrate
+
+# Seed starter content
+npm run db:seed
+
+# Open Prisma Studio
+npm run db:studio
+```
+
+There is currently **no** committed `prisma/migrations/` history. Create a baseline migration before production if you move away from `db push`.
+
 Open [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin/login](http://localhost:3000/admin/login) for admin.
 
 ## Environment Variables
@@ -70,15 +120,15 @@ SUPABASE_SERVICE_ROLE_KEY=
 DATABASE_URL=
 DIRECT_URL=
 RESEND_API_KEY=
-EMAIL_FROM=EduLead Network <noreply@yourdomain.com>
-ADMIN_NOTIFICATION_EMAIL=admin@yourdomain.com
+EMAIL_FROM=
+ADMIN_NOTIFICATION_EMAIL=
 JOIN_SUBMISSION_NOTIFICATION_EMAIL=
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=
 TURNSTILE_SECRET_KEY=
 NEXT_PUBLIC_GA_MEASUREMENT_ID=
 ```
 
-## Supabase Setup
+## Supabase Setup (Dashboard)
 
 ### 1. Create Project
 
@@ -238,6 +288,13 @@ src/
 │   ├── supabase/          # Supabase clients
 │   └── validations/       # Zod schemas
 └── test/
+supabase/
+├── README.md
+├── policies/
+│   ├── database-rls.sql
+│   └── storage-rls.sql
+└── setup/
+    └── buckets.md
 prisma/
 ├── schema.prisma
 └── seed.ts
