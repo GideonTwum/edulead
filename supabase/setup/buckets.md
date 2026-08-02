@@ -46,4 +46,9 @@ Public objects receive public URLs. Admin uploads are server-side via `/api/uplo
 
 ## Policy files
 
-After creating buckets, apply `../policies/storage-rls.sql`.
+After creating buckets, apply policies in this order:
+
+1. `../policies/database-rls.sql`
+2. `../policies/storage-rls.sql`
+
+See `../README.md` and `../../docs/supabase-setup.md` for setup steps and warnings. Do not use deprecated `auth.role()` examples from older documentation.

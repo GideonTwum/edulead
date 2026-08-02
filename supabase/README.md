@@ -55,3 +55,10 @@ Server-side Prisma and service-role storage operations may bypass these policies
 ## Credentials
 
 Never commit `.env`, `.env.local`, or real Supabase keys. Use `.env.example` for variable names only.
+
+The `SUPABASE_SERVICE_ROLE_KEY` must remain **server-only**.
+
+## Related documentation
+
+- `docs/supabase-setup.md` — step-by-step Supabase project setup
+- `README.md` — environment variables and deployment overview

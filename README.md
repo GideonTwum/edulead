@@ -157,45 +157,25 @@ Or use the Supabase dashboard to create users, then run Prisma seed after adding
 
 ### 4. Storage Buckets
 
-Create two buckets in Storage:
+See `supabase/setup/buckets.md` for authoritative bucket settings (10 MB limit, MIME types, folders).
 
 | Bucket | Public | Purpose |
 |--------|--------|---------|
-| `public-media` | Yes | Images, public PDFs |
-| `private-submissions` | No | Partner proposals, attachments |
-
-**Folder structure within buckets:**
-
-```
-branding/
-team/
-programmes/
-events/
-opportunities/
-articles/
-resources/
-join-attachments/
-general/
-```
+| `public-media` | Yes | Site media and public PDFs |
+| `private-submissions` | No | Partner proposals and join attachments |
 
 ### 5. Row Level Security (RLS)
 
-Enable RLS on all tables. For MVP admin-only access via service role:
+**Do not use inline policy examples from older docs.**
 
-```sql
--- Example: deny public access to admin tables
-ALTER TABLE "AdminProfile" ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "No public access" ON "AdminProfile" FOR ALL USING (false);
+The authoritative and current RLS policy files are located in:
 
--- Public read for published content
-ALTER TABLE "Programme" ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public read published programmes" ON "Programme"
-  FOR SELECT USING ("published" = true AND "deletedAt" IS NULL);
-```
+- `supabase/policies/database-rls.sql`
+- `supabase/policies/storage-rls.sql`
 
-Apply similar policies for `Opportunity`, `Event`, `Article`, `TeamMember`, `PageContent`, and `SiteSetting`.
+Apply them in the Supabase SQL Editor **after** `npm run db:push` and bucket creation. See `docs/supabase-setup.md` and `supabase/README.md` for the full apply order.
 
-Form submissions (`JoinSubmission`, `ContactMessage`, `NewsletterSubscriber`) should deny public SELECT.
+Policies use `public.is_active_admin()` (active `AdminProfile` via `auth.uid()`), not broad `auth.role() = 'authenticated'` access. Prisma and the **service role key** (server-only) may bypass RLS depending on the connection role.
 
 ## Database Migrations
 
