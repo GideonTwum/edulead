@@ -301,8 +301,14 @@ export default async function HomePage() {
       </section>
 
       {/* Join the Movement */}
-      <BackgroundOverlay image={PUBLIC_IMAGES.sections.join} overlay="gradient" minHeight="min-h-0">
-        <div className="container-brand section-padding">
+      <BackgroundOverlay
+        image={PUBLIC_IMAGES.sections.join}
+        overlay="join"
+        objectPosition="center 42%"
+        loading="lazy"
+        minHeight="min-h-0"
+      >
+        <div className="container-brand py-20 md:py-24 lg:py-32 xl:py-36">
           <SectionHeading
             eyebrow="Get Involved"
             title="Join the Movement"
@@ -311,7 +317,7 @@ export default async function HomePage() {
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {JOIN_PATHWAYS.map((path) => (
-              <JoinPathCard key={path.type} {...path} />
+              <JoinPathCard key={path.type} {...path} onPhotoBackground />
             ))}
           </div>
         </div>

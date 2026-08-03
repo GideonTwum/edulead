@@ -115,8 +115,8 @@ const sections = {
     alt: "Illustrative photo placeholder — young leaders in thoughtful conversation",
   },
   join: {
-    src: "/images/professionals/join-movement.svg",
-    alt: "Illustrative photo placeholder — diverse group joining a leadership community",
+    src: "/images/sections/join-the-movement.jpg",
+    alt: "",
   },
   newsletter: {
     src: "/images/professionals/newsletter.svg",

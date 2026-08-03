@@ -19,9 +19,10 @@ interface JoinPathCardProps {
   description: string;
   href: string;
   type: keyof typeof iconMap;
+  onPhotoBackground?: boolean;
 }
 
-export function JoinPathCard({ title, description, href, type }: JoinPathCardProps) {
+export function JoinPathCard({ title, description, href, type, onPhotoBackground = false }: JoinPathCardProps) {
   const Icon = iconMap[type];
   const { staggerItem } = useMotionConfig();
 
@@ -29,7 +30,12 @@ export function JoinPathCard({ title, description, href, type }: JoinPathCardPro
     <motion.div {...staggerItem}>
       <Link
         href={href}
-        className="group flex h-full flex-col rounded-brand-lg border border-brand-border bg-white p-6 shadow-brand transition-all hover:border-brand-green hover:shadow-brand-lg"
+        className={cn(
+          "group flex h-full min-h-[44px] flex-col rounded-brand-lg border p-6 shadow-brand transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2",
+          onPhotoBackground
+            ? "border-white/25 bg-white/95 text-brand-navy backdrop-blur-sm hover:border-brand-green hover:bg-white hover:shadow-brand-lg"
+            : "border-brand-border bg-white hover:border-brand-green hover:shadow-brand-lg",
+        )}
       >
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-navy text-brand-green transition-colors group-hover:bg-brand-green group-hover:text-brand-navy">
           <Icon className="h-6 w-6" aria-hidden="true" />

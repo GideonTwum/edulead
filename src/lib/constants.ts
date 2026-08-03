@@ -97,8 +97,8 @@ export const TARGET_AUDIENCES = [
   "University students",
   "Graduates",
   "Young professionals",
-  "First-generation students",
-  "Young people interested in governance, public service and leadership",
+  "First-generation opportunity seekers",
+  "Young people interested in governance, policy, leadership, or public service",
 ] as const;
 
 export const JOIN_PATHWAYS = [
