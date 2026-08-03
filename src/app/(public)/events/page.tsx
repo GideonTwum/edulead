@@ -6,6 +6,7 @@ import { EventCard } from "@/components/public/EventCard";
 import { EmptyState } from "@/components/public/EmptyState";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { ROUTES } from "@/lib/constants";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPublishedEvents } from "@/lib/data/content";
 
 export const metadata: Metadata = {
@@ -22,11 +23,19 @@ export default async function EventsPage() {
   return (
     <>
       <HeroSection
+        variant="banner"
+        bannerImage={PUBLIC_IMAGES.resources.events}
+        eyebrow="Events & Workshops"
         headline="Events"
         subtext="Workshops, policy dialogues, and leadership conversations. We are preparing our first events — register your interest to stay informed."
+        showCtas
+        primaryCtaHref={ROUTES.join}
+        primaryCtaLabel="Register Interest"
+        secondaryCtaHref="#events-list"
+        secondaryCtaLabel="View Events"
       />
 
-      <section className="section-padding">
+      <section id="events-list" className="section-padding">
         <div className="container-brand">
           <Breadcrumbs items={[{ label: "Events" }]} />
 
@@ -48,6 +57,7 @@ export default async function EventsPage() {
             <EmptyState
               title="Events Coming Soon"
               description="We are preparing our first series of leadership conversations. Join our community to be informed when registration opens."
+              image={PUBLIC_IMAGES.resources.events}
               action={<Link href={ROUTES.join} className="btn-primary">Join the Movement</Link>}
             />
           )}

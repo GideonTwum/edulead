@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Leadership team coming soon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#121f35"/>
+      <stop offset="55%" stop-color="#2a3d5c"/>
+      <stop offset="100%" stop-color="#3e5678"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="70%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#d4e157" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#d4e157" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <rect width="1200" height="800" fill="url(#glow)"/>
+  <circle cx="180" cy="620" r="140" fill="#d4e157" opacity="0.12"/>
+  <circle cx="980" cy="180" r="100" fill="#d4e157" opacity="0.08"/>
+  <rect x="80" y="520" width="320" height="4" rx="2" fill="#d4e157" opacity="0.5"/>
+  <rect x="80" y="540" width="220" height="4" rx="2" fill="white" opacity="0.15"/>
+  <text x="80" y="680" fill="white" opacity="0.9" font-family="Georgia, serif" font-size="28" font-weight="600">Leadership team coming soon</text>
+  <text x="80" y="720" fill="white" opacity="0.45" font-family="system-ui, sans-serif" font-size="16">Illustrative placeholder — replace with editorial photo</text>
+</svg>

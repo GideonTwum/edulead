@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { OpportunityFilters } from "@/components/public/OpportunityFilters";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getActiveOpportunities } from "@/lib/data/content";
 
 export const metadata: Metadata = {
@@ -17,8 +18,12 @@ export default async function OpportunitiesPage() {
   return (
     <>
       <HeroSection
+        variant="banner"
+        bannerImage={PUBLIC_IMAGES.resources.opportunities}
+        eyebrow="Opportunities Directory"
         headline="Opportunities Directory"
         subtext="A curated directory of scholarships, fellowships, internships, and leadership opportunities for young people. We add new listings as we discover them."
+        showCtas={false}
       />
 
       <section className="section-padding">

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { OpportunityCard } from "./OpportunityCard";
 import { EmptyState } from "./EmptyState";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import type { Opportunity } from "@prisma/client";
 
 const typeOptions = [
@@ -156,6 +157,7 @@ export function OpportunityFilters({ opportunities }: OpportunityFiltersProps) {
                   ? "Try adjusting your filters or search terms."
                   : "We are curating leadership opportunities for young people. Check back soon."
               }
+              image={PUBLIC_IMAGES.resources.opportunities}
               action={
                 hasFilters ? (
                   <button type="button" onClick={clearFilters} className="btn-secondary">

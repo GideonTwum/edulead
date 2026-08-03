@@ -3,9 +3,10 @@ import Link from "next/link";
 import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { TeamCard } from "@/components/public/TeamCard";
-import { EmptyState } from "@/components/public/EmptyState";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
+import { ProfilePlaceholder } from "@/components/public/media";
 import { ROUTES } from "@/lib/constants";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getActiveTeamMembers } from "@/lib/data/content";
 
 export const metadata: Metadata = {
@@ -19,8 +20,12 @@ export default async function TeamPage() {
   return (
     <>
       <HeroSection
+        variant="banner"
+        bannerImage={PUBLIC_IMAGES.resources.team}
+        eyebrow="People"
         headline="Our Team"
         subtext="Meet the people building EduLead Network — a growing team committed to youth leadership development."
+        showCtas={false}
       />
 
       <section className="section-padding">
@@ -40,11 +45,15 @@ export default async function TeamPage() {
               ))}
             </div>
           ) : (
-            <EmptyState
-              title="Team Profiles Coming Soon"
-              description="We are building our leadership team. Check back soon or join our community to stay connected."
-              action={<Link href={ROUTES.join} className="btn-primary">Join the Movement</Link>}
-            />
+            <ProfilePlaceholder message="Our leadership team will be introduced soon." />
+          )}
+
+          {members.length === 0 && (
+            <div className="mt-8 text-center">
+              <Link href={ROUTES.join} className="btn-primary">
+                Join the Movement
+              </Link>
+            </div>
           )}
         </div>
       </section>

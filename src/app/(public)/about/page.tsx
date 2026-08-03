@@ -1,21 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, GraduationCap, Users, Briefcase, Globe, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { FocusAreaCard } from "@/components/public/FocusAreaCard";
 import { FounderMessage } from "@/components/public/FounderMessage";
 import { TeamCard } from "@/components/public/TeamCard";
 import { JoinPathCard } from "@/components/public/JoinPathCard";
+import { AudienceCardsGrid } from "@/components/public/AudienceCardsGrid";
 import { BrandShape, SectionDivider } from "@/components/public/BrandShape";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import {
+  BackgroundOverlay,
+  SplitImageSection,
+} from "@/components/public/media";
+import {
   CORE_VALUES,
-  TARGET_AUDIENCES,
   FOCUS_AREAS,
   JOIN_PATHWAYS,
   ROUTES,
 } from "@/lib/constants";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPageSections, getSection } from "@/lib/data/settings";
 import { getActiveTeamMembers } from "@/lib/data/content";
 import { PageKey } from "@prisma/client";
@@ -33,8 +38,6 @@ const DEFAULT_OBJECTIVES = [
   "Facilitate youth policy dialogue with practitioners and policymakers",
   "Strengthen civic engagement and communication skills for emerging leaders",
 ];
-
-const audienceIcons = [GraduationCap, Users, Briefcase, Globe, Heart, Users];
 
 export default async function AboutPage() {
   const [sections, teamMembers] = await Promise.all([
@@ -62,11 +65,15 @@ export default async function AboutPage() {
   return (
     <>
       <HeroSection
+        variant="banner"
+        bannerImage={PUBLIC_IMAGES.sections.aboutStory}
+        eyebrow="About EduLead"
         headline={hero?.heading ?? "About EduLead Network"}
         subtext={
           hero?.body ??
           "We are an emerging youth leadership network building structured pathways from education to policy, governance, and impact-driven careers."
         }
+        showCtas={false}
       />
 
       <section className="section-padding bg-white">
@@ -86,31 +93,33 @@ export default async function AboutPage() {
 
       <section className="section-padding">
         <div className="container-brand">
-          <SectionHeading
-            eyebrow="Our Story"
-            title={story?.heading ?? "Why EduLead Exists"}
-            description={
-              story?.body ??
-              "EduLead Network is being built in response to a clear need: young people deserve more than academic credentials — they deserve mentorship, policy exposure, and practical guidance as they transition into leadership roles. We are an early-stage organisation, actively designing our programmes and building our community."
-            }
-            align="left"
-          />
+          <SplitImageSection image={PUBLIC_IMAGES.sections.aboutStory} imagePosition="right">
+            <SectionHeading
+              eyebrow="Our Story"
+              title={story?.heading ?? "Why EduLead Exists"}
+              description={
+                story?.body ??
+                "EduLead Network is being built in response to a clear need: young people deserve more than academic credentials — they deserve mentorship, policy exposure, and practical guidance as they transition into leadership roles. We are an early-stage organisation, actively designing our programmes and building our community."
+              }
+              align="left"
+            />
+          </SplitImageSection>
         </div>
       </section>
 
-      <section className="relative overflow-hidden gradient-navy section-padding">
-        <BrandShape variant="circle" className="right-0 top-0 h-64 w-64" />
-        <div className="container-brand relative">
+      <BackgroundOverlay image={PUBLIC_IMAGES.sections.visionMission} overlay="navy-heavy">
+        <div className="container-brand section-padding">
+          <BrandShape variant="circle" className="right-0 top-0 h-64 w-64 opacity-40" />
           <SectionHeading eyebrow="Purpose" title="Vision & Mission" light align="left" />
-          <div className="grid gap-8 lg:grid-cols-2">
-            <div className="rounded-brand-lg border border-white/10 bg-white/5 p-8 backdrop-blur">
+          <div className="relative grid gap-8 lg:grid-cols-2">
+            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
               <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-green">Vision</h3>
               <p className="text-lg leading-relaxed text-white">
                 {visionMeta?.vision ??
                   "To develop a generation of young leaders equipped with skills, confidence, and networks to shape policy, governance, and societal transformation."}
               </p>
             </div>
-            <div className="rounded-brand-lg border border-white/10 bg-white/5 p-8 backdrop-blur">
+            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
               <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-green">Mission</h3>
               <p className="text-lg leading-relaxed text-white">
                 {visionMeta?.mission ??
@@ -119,7 +128,7 @@ export default async function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </BackgroundOverlay>
 
       <section className="section-padding bg-white">
         <div className="container-brand">
@@ -165,16 +174,18 @@ export default async function AboutPage() {
 
       <section className="section-padding bg-white">
         <div className="container-brand">
-          <SectionHeading
-            eyebrow="How We Work"
-            title={approach?.heading ?? "Our Approach"}
-            description={
-              approach?.body ??
-              "We take a practical, mentorship-led approach. Rather than one-off events, we are building sustained engagement — connecting young people with mentors, policy practitioners, and career guidance over time. As an emerging organisation, we are transparent about what we are building and invite you to grow with us."
-            }
-            align="left"
-          />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <SplitImageSection image={PUBLIC_IMAGES.sections.aboutApproach} imagePosition="left">
+            <SectionHeading
+              eyebrow="How We Work"
+              title={approach?.heading ?? "Our Approach"}
+              description={
+                approach?.body ??
+                "We take a practical, mentorship-led approach. Rather than one-off events, we are building sustained engagement — connecting young people with mentors, policy practitioners, and career guidance over time. As an emerging organisation, we are transparent about what we are building and invite you to grow with us."
+              }
+              align="left"
+            />
+          </SplitImageSection>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FOCUS_AREAS.map((area) => (
               <FocusAreaCard key={area.title} {...area} />
             ))}
@@ -193,19 +204,7 @@ export default async function AboutPage() {
             }
             align="left"
           />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TARGET_AUDIENCES.map((audience, i) => {
-              const Icon = audienceIcons[i] ?? Users;
-              return (
-                <div key={audience} className="flex items-start gap-4 rounded-brand-lg bg-white p-6 shadow-brand">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-navy text-brand-green">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <p className="text-sm font-medium text-brand-text">{audience}</p>
-                </div>
-              );
-            })}
-          </div>
+          <AudienceCardsGrid />
         </div>
       </section>
 
@@ -230,10 +229,7 @@ export default async function AboutPage() {
             <SectionHeading
               eyebrow="People"
               title={teamPreview?.heading ?? "Our Team"}
-              description={
-                teamPreview?.body ??
-                "Meet the people building EduLead Network."
-              }
+              description={teamPreview?.body ?? "Meet the people building EduLead Network."}
               align="left"
             />
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -250,8 +246,8 @@ export default async function AboutPage() {
         </section>
       )}
 
-      <section className="section-padding gradient-navy">
-        <div className="container-brand">
+      <BackgroundOverlay image={PUBLIC_IMAGES.sections.join} overlay="gradient" minHeight="min-h-0">
+        <div className="container-brand section-padding">
           <SectionHeading
             eyebrow="Get Involved"
             title={joinCta?.heading ?? "Join the Movement"}
@@ -267,7 +263,7 @@ export default async function AboutPage() {
             ))}
           </div>
         </div>
-      </section>
+      </BackgroundOverlay>
     </>
   );
 }

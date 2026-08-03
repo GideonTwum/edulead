@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { InsightsListing } from "./InsightsListing";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPublishedArticles } from "@/lib/data/content";
 
 export const metadata: Metadata = {
@@ -17,8 +18,12 @@ export default async function InsightsPage() {
   return (
     <>
       <HeroSection
+        variant="banner"
+        bannerImage={PUBLIC_IMAGES.resources.insights}
+        eyebrow="Knowledge Hub"
         headline="Insights"
         subtext="Leadership resources, policy perspectives, and career guidance for young people navigating governance and public service."
+        showCtas={false}
       />
 
       <section className="section-padding">

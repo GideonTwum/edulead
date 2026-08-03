@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, GraduationCap, Users, Briefcase, Globe, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { FocusAreaCard } from "@/components/public/FocusAreaCard";
@@ -12,13 +12,16 @@ import { FounderMessage } from "@/components/public/FounderMessage";
 import { JoinPathCard } from "@/components/public/JoinPathCard";
 import { NewsletterForm } from "@/components/public/NewsletterForm";
 import { EmptyState } from "@/components/public/EmptyState";
+import { AudienceCardsGrid } from "@/components/public/AudienceCardsGrid";
+import { LeadershipGapImage } from "@/components/public/LeadershipGapImage";
 import { BrandShape, SectionDivider } from "@/components/public/BrandShape";
+import { BackgroundOverlay } from "@/components/public/media";
 import {
   FOCUS_AREAS,
-  TARGET_AUDIENCES,
   JOIN_PATHWAYS,
   ROUTES,
 } from "@/lib/constants";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPageSections, getSection } from "@/lib/data/settings";
 import {
   getFeaturedProgrammes,
@@ -33,8 +36,6 @@ export const metadata: Metadata = {
   description:
     "EduLead Network bridges the gap between education and leadership by equipping young people with mentorship, policy exposure, and career guidance.",
 };
-
-const audienceIcons = [GraduationCap, Users, Briefcase, Globe, Heart, Users];
 
 export default async function HomePage() {
   const [sections, programmes, events, opportunities, articles] = await Promise.all([
@@ -56,11 +57,12 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection
+        variant="editorial"
         headline={getSection(sections, "hero")?.heading ?? undefined}
         subtext={getSection(sections, "hero")?.body ?? undefined}
       />
 
-      {/* Why EduLead Exists */}
+      {/* Leadership Gap */}
       <section className="section-padding bg-white">
         <div className="container-brand">
           <SectionHeading
@@ -72,49 +74,55 @@ export default async function HomePage() {
             }
           />
 
-          <div className="mx-auto max-w-4xl">
-            <div className="grid gap-4 md:grid-cols-5 md:gap-2">
-              {[
-                { step: "Education", desc: "Strong academic foundation" },
-                { step: "→", desc: "Limited leadership exposure" },
-                { step: "→", desc: "Limited mentor access" },
-                { step: "→", desc: "Career navigation challenges" },
-                { step: "EduLead", desc: "Bridges the gap", highlight: true },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className={`rounded-xl p-4 text-center ${
-                    item.highlight
-                      ? "gradient-navy text-white md:col-span-1"
-                      : "bg-brand-off-white"
-                  }`}
-                >
-                  <p className={`font-display text-sm font-bold ${item.highlight ? "text-brand-green" : "text-brand-navy"}`}>
-                    {item.step}
-                  </p>
-                  <p className={`mt-1 text-xs ${item.highlight ? "text-white/80" : "text-brand-grey"}`}>
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div className="mx-auto w-full max-w-xl">
+              <div className="grid gap-4 md:grid-cols-5 md:gap-2">
+                {[
+                  { step: "Education", desc: "Strong academic foundation" },
+                  { step: "→", desc: "Limited leadership exposure" },
+                  { step: "→", desc: "Limited mentor access" },
+                  { step: "→", desc: "Career navigation challenges" },
+                  { step: "EduLead", desc: "Bridges the gap", highlight: true },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className={`rounded-xl p-4 text-center ${
+                      item.highlight
+                        ? "gradient-navy text-white md:col-span-1"
+                        : "bg-brand-off-white"
+                    }`}
+                  >
+                    <p
+                      className={`font-display text-sm font-bold ${item.highlight ? "text-brand-green" : "text-brand-navy"}`}
+                    >
+                      {item.step}
+                    </p>
+                    <p className={`mt-1 text-xs ${item.highlight ? "text-white/80" : "text-brand-grey"}`}>
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            <LeadershipGapImage />
           </div>
         </div>
       </section>
 
       {/* Vision & Mission */}
-      <section className="relative overflow-hidden gradient-navy section-padding">
-        <BrandShape variant="circle" className="right-0 top-0 h-64 w-64" />
-        <div className="container-brand relative">
-          <div className="grid gap-12 lg:grid-cols-2">
-            <div className="rounded-brand-lg border border-white/10 bg-white/5 p-8 backdrop-blur">
+      <BackgroundOverlay image={PUBLIC_IMAGES.sections.visionMission} overlay="navy-heavy">
+        <div className="container-brand section-padding">
+          <BrandShape variant="circle" className="right-0 top-0 h-64 w-64 opacity-40" />
+          <div className="relative grid gap-12 lg:grid-cols-2">
+            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
               <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-green">Vision</h3>
               <p className="text-lg leading-relaxed text-white md:text-xl">
                 {vision?.vision ??
                   "To develop a generation of young leaders who are equipped with skills, confidence, and networks to shape policy, governance, and societal transformation."}
               </p>
             </div>
-            <div className="rounded-brand-lg border border-white/10 bg-white/5 p-8 backdrop-blur">
+            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
               <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-green">Mission</h3>
               <p className="text-lg leading-relaxed text-white md:text-xl">
                 {vision?.mission ??
@@ -123,7 +131,7 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </BackgroundOverlay>
 
       <SectionDivider />
 
@@ -168,7 +176,12 @@ export default async function HomePage() {
             <EmptyState
               title="Programmes Coming Soon"
               description="We are designing our first leadership development programmes. Join our newsletter to be informed when they launch."
-              action={<Link href="#newsletter" className="btn-primary">Subscribe to Updates</Link>}
+              image={PUBLIC_IMAGES.programmes.default}
+              action={
+                <Link href="#newsletter" className="btn-primary">
+                  Subscribe to Updates
+                </Link>
+              }
             />
           )}
         </div>
@@ -182,19 +195,7 @@ export default async function HomePage() {
             title="Who EduLead Is For"
             description="EduLead Network is designed for young people at various stages of their leadership journey."
           />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TARGET_AUDIENCES.map((audience, i) => {
-              const Icon = audienceIcons[i] ?? Users;
-              return (
-                <div key={audience} className="flex items-start gap-4 rounded-brand-lg bg-white p-6 shadow-brand">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-navy text-brand-green">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <p className="text-sm font-medium text-brand-text">{audience}</p>
-                </div>
-              );
-            })}
-          </div>
+          <AudienceCardsGrid />
         </div>
       </section>
 
@@ -225,14 +226,21 @@ export default async function HomePage() {
                 ))}
               </div>
               <div className="mt-10 text-center">
-                <Link href={ROUTES.events} className="btn-secondary">View All Events</Link>
+                <Link href={ROUTES.events} className="btn-secondary">
+                  View All Events
+                </Link>
               </div>
             </>
           ) : (
             <EmptyState
               title="Events Coming Soon"
               description="We are preparing our first series of leadership conversations. Join our newsletter to be informed when registration opens."
-              action={<Link href="#newsletter" className="btn-primary">Join Newsletter</Link>}
+              image={PUBLIC_IMAGES.resources.events}
+              action={
+                <Link href="#newsletter" className="btn-primary">
+                  Join Newsletter
+                </Link>
+              }
             />
           )}
         </div>
@@ -250,13 +258,16 @@ export default async function HomePage() {
                 ))}
               </div>
               <div className="mt-10 text-center">
-                <Link href={ROUTES.opportunities} className="btn-secondary">Browse All Opportunities</Link>
+                <Link href={ROUTES.opportunities} className="btn-secondary">
+                  Browse All Opportunities
+                </Link>
               </div>
             </>
           ) : (
             <EmptyState
               title="Opportunities Directory"
               description="We are curating leadership opportunities for young people. Check back soon or subscribe for updates."
+              image={PUBLIC_IMAGES.resources.opportunities}
             />
           )}
         </div>
@@ -274,21 +285,24 @@ export default async function HomePage() {
                 ))}
               </div>
               <div className="mt-10 text-center">
-                <Link href={ROUTES.insights} className="btn-secondary">Read More Insights</Link>
+                <Link href={ROUTES.insights} className="btn-secondary">
+                  Read More Insights
+                </Link>
               </div>
             </>
           ) : (
             <EmptyState
               title="Insights Coming Soon"
               description="We will share leadership resources, policy perspectives, and career guidance articles here."
+              image={PUBLIC_IMAGES.resources.insights}
             />
           )}
         </div>
       </section>
 
       {/* Join the Movement */}
-      <section className="section-padding gradient-navy">
-        <div className="container-brand">
+      <BackgroundOverlay image={PUBLIC_IMAGES.sections.join} overlay="gradient" minHeight="min-h-0">
+        <div className="container-brand section-padding">
           <SectionHeading
             eyebrow="Get Involved"
             title="Join the Movement"
@@ -301,14 +315,16 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </BackgroundOverlay>
 
       {/* Newsletter */}
-      <section className="section-padding bg-brand-off-white">
-        <div className="container-brand max-w-2xl">
-          <NewsletterForm />
+      <BackgroundOverlay image={PUBLIC_IMAGES.sections.newsletter} overlay="navy" minHeight="min-h-0">
+        <div className="container-brand section-padding">
+          <div className="mx-auto max-w-2xl">
+            <NewsletterForm />
+          </div>
         </div>
-      </section>
+      </BackgroundOverlay>
     </>
   );
 }

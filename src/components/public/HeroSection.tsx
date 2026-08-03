@@ -2,29 +2,99 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Users, BookOpen, Mic, Globe, TrendingUp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ROUTES } from "@/lib/constants";
 import { BrandShape } from "./BrandShape";
+import { HeroCollage } from "./media/HeroCollage";
+import { HeroBackgroundSlideshow } from "./HeroBackgroundSlideshow";
+import { BackgroundOverlay } from "./media/BackgroundOverlay";
 import { useMotionConfig } from "@/hooks/useMotionConfig";
+import type { PublicImageRef } from "@/lib/public-images";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
+import { HERO_SLIDESHOW_IMAGES } from "@/config/hero-images";
 
 interface HeroSectionProps {
   headline?: string;
   subtext?: string;
+  variant?: "editorial" | "banner";
+  bannerImage?: PublicImageRef;
+  eyebrow?: string;
+  showCtas?: boolean;
+  primaryCtaHref?: string;
+  primaryCtaLabel?: string;
+  secondaryCtaHref?: string;
+  secondaryCtaLabel?: string;
 }
 
 export function HeroSection({
   headline = "Preparing Young Leaders to Shape Policy, Governance and Society.",
   subtext = "EduLead Network bridges the gap between education and leadership by equipping young people with mentorship, policy exposure, career guidance and the confidence to lead.",
+  variant = "editorial",
+  bannerImage = PUBLIC_IMAGES.resources.collaboration,
+  eyebrow = "Education for Leadership and Change",
+  showCtas = true,
+  primaryCtaHref = ROUTES.join,
+  primaryCtaLabel = "Join the Movement",
+  secondaryCtaHref = "#focus-areas",
+  secondaryCtaLabel = "Explore Our Focus Areas",
 }: HeroSectionProps) {
-  const { fadeInUp, prefersReducedMotion } = useMotionConfig();
+  const { prefersReducedMotion } = useMotionConfig();
+
+  if (variant === "banner") {
+    return (
+      <BackgroundOverlay
+        image={bannerImage}
+        overlay="gradient"
+        minHeight="min-h-[22rem] md:min-h-[28rem]"
+        className="pb-16 pt-10 md:pb-24 md:pt-14"
+      >
+        <div className="container-brand section-padding !py-0">
+          <div className="max-w-3xl">
+            {eyebrow ? (
+              <span className="mb-4 inline-block rounded-full bg-brand-green/20 px-4 py-1.5 text-sm font-semibold text-brand-green">
+                {eyebrow}
+              </span>
+            ) : null}
+            <h1 className="font-display text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
+              {headline}
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">{subtext}</p>
+            {showCtas ? (
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link href={primaryCtaHref} className="btn-primary">
+                  {primaryCtaLabel}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                {secondaryCtaHref && secondaryCtaLabel ? (
+                  <Link href={secondaryCtaHref} className="btn-white">
+                    {secondaryCtaLabel}
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </BackgroundOverlay>
+    );
+  }
 
   return (
-    <section className="relative overflow-hidden gradient-navy pb-20 pt-8 md:pb-28 md:pt-12">
-      <BrandShape variant="circle" className="right-0 top-0 h-96 w-96" />
-      <BrandShape variant="circle" className="bottom-0 left-0 h-64 w-64 bg-brand-green/10" />
-      <BrandShape variant="dots" className="inset-0 opacity-20" />
+    <section className="relative overflow-hidden pb-20 pt-8 md:pb-28 md:pt-12">
+      {/* Layer 1: slideshow */}
+      <HeroBackgroundSlideshow images={HERO_SLIDESHOW_IMAGES} className="z-0" />
 
-      <div className="container-brand relative">
+      {/* Layer 2: navy gradient overlay */}
+      <div
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[rgba(15,24,79,0.82)] to-[rgba(18,31,96,0.78)] md:from-[rgba(15,24,79,0.82)] md:to-[rgba(18,31,96,0.78)] max-md:from-[rgba(15,24,79,0.88)] max-md:to-[rgba(18,31,96,0.84)]"
+        aria-hidden="true"
+      />
+
+      {/* Layer 3: existing brand shapes / dotted grid */}
+      <BrandShape variant="circle" className="right-0 top-0 z-[2] h-96 w-96" />
+      <BrandShape variant="circle" className="bottom-0 left-0 z-[2] h-64 w-64 bg-brand-green/10" />
+      <BrandShape variant="dots" className="inset-0 z-[2] opacity-20" />
+
+      <div className="container-brand relative z-10">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <motion.span
@@ -33,7 +103,7 @@ export function HeroSection({
               transition={{ duration: 0.5 }}
               className="mb-4 inline-block rounded-full bg-brand-green/20 px-4 py-1.5 text-sm font-semibold text-brand-green"
             >
-              Education for Leadership and Change
+              {eyebrow}
             </motion.span>
 
             <motion.h1
@@ -54,51 +124,33 @@ export function HeroSection({
               {subtext}
             </motion.p>
 
-            <motion.div
-              initial={prefersReducedMotion ? {} : { opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-8 flex flex-wrap gap-4"
-            >
-              <Link href={ROUTES.join} className="btn-primary">
-                Join the Movement
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link href="#focus-areas" className="btn-white">
-                Explore Our Focus Areas
-              </Link>
-            </motion.div>
+            {showCtas ? (
+              <motion.div
+                initial={prefersReducedMotion ? {} : { opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mt-8 flex flex-wrap gap-4"
+              >
+                <Link href={primaryCtaHref} className="btn-primary">
+                  {primaryCtaLabel}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                {secondaryCtaHref && secondaryCtaLabel ? (
+                  <Link href={secondaryCtaHref} className="btn-white">
+                    {secondaryCtaLabel}
+                  </Link>
+                ) : null}
+              </motion.div>
+            ) : null}
           </div>
 
           <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
+            initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative hidden lg:block"
-            aria-hidden="true"
           >
-            <div className="relative aspect-square max-w-lg mx-auto">
-              <div className="absolute inset-0 rounded-full bg-brand-green/10 blur-2xl" />
-              <div className="relative grid grid-cols-2 gap-4 p-8">
-                {[
-                  { icon: Users, label: "Mentorship", color: "bg-brand-green text-brand-navy" },
-                  { icon: BookOpen, label: "Education", color: "bg-white/10 text-brand-green" },
-                  { icon: Mic, label: "Policy Dialogue", color: "bg-white/10 text-brand-green" },
-                  { icon: Globe, label: "Networks", color: "bg-brand-green text-brand-navy" },
-                  { icon: TrendingUp, label: "Leadership", color: "bg-white/10 text-brand-green", colSpan: true },
-                ].map((item, i) => (
-                  <motion.div
-                    key={item.label}
-                    {...fadeInUp}
-                    transition={{ delay: 0.3 + i * 0.1 }}
-                    className={`flex flex-col items-center justify-center rounded-2xl p-6 backdrop-blur ${item.color} ${"colSpan" in item && item.colSpan ? "col-span-2" : ""}`}
-                  >
-                    <item.icon className="mb-2 h-8 w-8" />
-                    <span className="text-sm font-semibold">{item.label}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+            <HeroCollage />
           </motion.div>
         </div>
       </div>

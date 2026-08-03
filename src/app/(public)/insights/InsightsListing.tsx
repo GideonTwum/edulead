@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArticleCard } from "@/components/public/ArticleCard";
 import { EmptyState } from "@/components/public/EmptyState";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import type { Article, ArticleCategory } from "@prisma/client";
 
 type ArticleWithCategory = Article & { category?: ArticleCategory | null };
@@ -81,6 +82,7 @@ export function InsightsListing({ articles }: InsightsListingProps) {
                   ? "No articles in this category yet. Check back soon."
                   : "We will share leadership resources, policy perspectives, and career guidance articles here."
               }
+              image={PUBLIC_IMAGES.resources.insights}
             />
           </motion.div>
         )}

@@ -6,6 +6,7 @@ import { JoinPathCard } from "@/components/public/JoinPathCard";
 import { JoinForm } from "@/components/public/JoinForm";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { JOIN_PATHWAYS } from "@/lib/constants";
+import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPageSections, getSection } from "@/lib/data/settings";
 import { PageKey } from "@prisma/client";
 
@@ -23,11 +24,15 @@ export default async function JoinPage() {
   return (
     <>
       <HeroSection
+        variant="banner"
+        bannerImage={PUBLIC_IMAGES.sections.join}
+        eyebrow="Get Involved"
         headline={hero?.heading ?? "Join the Movement"}
         subtext={
           hero?.body ??
           "Whether you are a young person seeking mentorship, a professional willing to guide others, or an organisation looking to partner — there is a place for you in EduLead Network."
         }
+        showCtas={false}
       />
 
       <section className="section-padding">

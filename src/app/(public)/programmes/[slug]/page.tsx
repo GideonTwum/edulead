@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Calendar, MapPin, Users, ExternalLink } from "lucide-react";
-import { HeroSection } from "@/components/public/HeroSection";
 import { RichTextRenderer } from "@/components/public/RichTextRenderer";
 import { ProgrammeInterestForm } from "@/components/public/ProgrammeInterestForm";
+import { ProgrammeCard } from "@/components/public/ProgrammeCard";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
+import { SectionHeading } from "@/components/public/SectionHeading";
+import { EditorialImage } from "@/components/public/media";
 import { ROUTES } from "@/lib/constants";
-import { getProgrammeBySlug } from "@/lib/data/content";
-import { formatDate } from "@/lib/utils";
+import { getProgrammePlaceholder, resolveImageSrc } from "@/lib/public-images";
+import { getProgrammeBySlug, getPublishedProgrammes } from "@/lib/data/content";
+import { formatDate, cn } from "@/lib/utils";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -34,10 +36,24 @@ const statusLabels: Record<string, string> = {
   COMPLETED: "Completed",
 };
 
+const statusColors: Record<string, string> = {
+  PLANNED: "bg-brand-navy text-brand-green",
+  COMING_SOON: "bg-amber-500 text-white",
+  OPEN: "bg-green-600 text-white",
+  ONGOING: "bg-blue-600 text-white",
+  COMPLETED: "bg-brand-navy/10 text-brand-navy",
+};
+
 export default async function ProgrammeDetailPage({ params }: Props) {
   const { slug } = await params;
-  const programme = await getProgrammeBySlug(slug);
+  const [programme, allProgrammes] = await Promise.all([
+    getProgrammeBySlug(slug),
+    getPublishedProgrammes(),
+  ]);
   if (!programme) notFound();
+
+  const image = resolveImageSrc(programme.featuredImage, getProgrammePlaceholder(programme.category));
+  const related = allProgrammes.filter((p) => p.slug !== slug).slice(0, 3);
 
   const detailSections = [
     { label: "Objectives", content: programme.objectives },
@@ -48,42 +64,54 @@ export default async function ProgrammeDetailPage({ params }: Props) {
 
   return (
     <>
-      <HeroSection headline={programme.title} subtext={programme.excerpt} />
-
-      <section className="section-padding">
+      <section className="relative overflow-hidden bg-brand-navy pb-8 pt-6 md:pb-12">
         <div className="container-brand">
           <Breadcrumbs
             items={[
               { label: "Programmes", href: ROUTES.programmes },
               { label: programme.title },
             ]}
+            light
           />
-
-          <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
+          <div className="mt-6 grid items-end gap-8 lg:grid-cols-2">
             <div>
-              {programme.featuredImage && (
-                <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-brand-lg">
-                  <Image
-                    src={programme.featuredImage}
-                    alt={programme.title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-              )}
-
-              <div className="mb-6 flex flex-wrap gap-2">
-                <span className="rounded-full bg-brand-navy px-3 py-1 text-xs font-semibold text-brand-green">
+              <div className="mb-4 flex flex-wrap gap-2">
+                <span
+                  className={cn(
+                    "rounded-full px-3 py-1 text-xs font-semibold",
+                    statusColors[programme.status] ?? statusColors.PLANNED,
+                  )}
+                >
                   {statusLabels[programme.status] ?? programme.status}
                 </span>
-                {programme.format && (
-                  <span className="rounded-full bg-brand-off-white px-3 py-1 text-xs font-medium text-brand-grey">
+                {programme.format ? (
+                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/80">
                     {programme.format}
                   </span>
-                )}
+                ) : null}
               </div>
+              <h1 className="font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+                {programme.title}
+              </h1>
+              <p className="mt-4 max-w-xl text-lg text-white/80">{programme.excerpt}</p>
+            </div>
+            <EditorialImage
+              src={image.src}
+              alt={programme.featuredImage ? programme.title : image.alt}
+              rounded="2xl"
+              aspect="video"
+              priority
+              className="shadow-brand-lg"
+              sizes="(max-width: 1024px) 100vw, 560px"
+            />
+          </div>
+        </div>
+      </section>
 
+      <section className="section-padding">
+        <div className="container-brand">
+          <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
+            <div>
               <RichTextRenderer content={programme.description} />
 
               {detailSections.map((section) => (
@@ -160,6 +188,22 @@ export default async function ProgrammeDetailPage({ params }: Props) {
               )}
             </aside>
           </div>
+
+          {related.length > 0 && (
+            <div className="mt-20 border-t border-brand-border pt-16">
+              <SectionHeading
+                eyebrow="Explore More"
+                title="Related Programmes"
+                description="Other leadership development programmes you may be interested in."
+                align="left"
+              />
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {related.map((p) => (
+                  <ProgrammeCard key={p.id} programme={p} />
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mt-12 text-center">
             <Link href={ROUTES.programmes} className="btn-secondary">
