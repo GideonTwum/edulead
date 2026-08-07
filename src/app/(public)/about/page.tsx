@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { FocusAreaCard } from "@/components/public/FocusAreaCard";
 import { FounderMessage } from "@/components/public/FounderMessage";
+import { MeetTheFounderSection } from "@/components/public/MeetTheFounderSection";
 import { TeamCard } from "@/components/public/TeamCard";
 import { JoinPathCard } from "@/components/public/JoinPathCard";
 import { AudienceCardsGrid } from "@/components/public/AudienceCardsGrid";
@@ -208,8 +209,10 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      <MeetTheFounderSection />
+
       {founder && (
-        <section className="section-padding bg-white">
+        <section className="section-padding">
           <div className="container-brand">
             <SectionHeading eyebrow="Leadership" title="Founder's Message" align="left" />
             <FounderMessage

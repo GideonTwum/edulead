@@ -9,11 +9,11 @@ import { EventCard } from "@/components/public/EventCard";
 import { OpportunityCard } from "@/components/public/OpportunityCard";
 import { ArticleCard } from "@/components/public/ArticleCard";
 import { FounderMessage } from "@/components/public/FounderMessage";
+import { FounderIntroductionSection } from "@/components/public/FounderIntroductionSection";
 import { JoinPathCard } from "@/components/public/JoinPathCard";
 import { NewsletterForm } from "@/components/public/NewsletterForm";
 import { EmptyState } from "@/components/public/EmptyState";
 import { AudienceCardsGrid } from "@/components/public/AudienceCardsGrid";
-import { LeadershipGapImage } from "@/components/public/LeadershipGapImage";
 import { BrandShape, SectionDivider } from "@/components/public/BrandShape";
 import { BackgroundOverlay } from "@/components/public/media";
 import {
@@ -62,7 +62,7 @@ export default async function HomePage() {
         subtext={getSection(sections, "hero")?.body ?? undefined}
       />
 
-      {/* Leadership Gap */}
+      {/* The Challenge */}
       <section className="section-padding bg-white">
         <div className="container-brand">
           <SectionHeading
@@ -72,41 +72,8 @@ export default async function HomePage() {
               whySection?.body ??
               "Across many countries, a persistent gap exists between education and leadership readiness. Students gain academic qualifications but often lack structured pathways into policy, governance, and high-impact careers."
             }
+            className="!mb-0"
           />
-
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div className="mx-auto w-full max-w-xl">
-              <div className="grid gap-4 md:grid-cols-5 md:gap-2">
-                {[
-                  { step: "Education", desc: "Strong academic foundation" },
-                  { step: "→", desc: "Limited leadership exposure" },
-                  { step: "→", desc: "Limited mentor access" },
-                  { step: "→", desc: "Career navigation challenges" },
-                  { step: "EduLead", desc: "Bridges the gap", highlight: true },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className={`rounded-xl p-4 text-center ${
-                      item.highlight
-                        ? "gradient-navy text-white md:col-span-1"
-                        : "bg-brand-off-white"
-                    }`}
-                  >
-                    <p
-                      className={`font-display text-sm font-bold ${item.highlight ? "text-brand-green" : "text-brand-navy"}`}
-                    >
-                      {item.step}
-                    </p>
-                    <p className={`mt-1 text-xs ${item.highlight ? "text-white/80" : "text-brand-grey"}`}>
-                      {item.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <LeadershipGapImage />
-          </div>
         </div>
       </section>
 
@@ -186,6 +153,8 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+
+      <FounderIntroductionSection />
 
       {/* Who EduLead is For */}
       <section className="section-padding">

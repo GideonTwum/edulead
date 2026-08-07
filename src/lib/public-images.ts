@@ -105,11 +105,15 @@ const resources = {
   },
 } as const;
 
-const sections = {
-  leadershipGap: {
-    src: "/images/professionals/mentorship-growth.svg",
-    alt: "Illustrative photo placeholder — mentor supporting a student's growth",
+const founder = {
+  introducingArtwork: {
+    src: "/images/founder/introducing-edulead-network.jpg",
+    alt: "EduLead Network introduction artwork featuring founder Elizabeth Dansoa Osei",
   },
+  alt: "EduLead Network introduction artwork featuring founder Elizabeth Dansoa Osei",
+} as const;
+
+const sections = {
   visionMission: {
     src: "/images/professionals/vision.svg",
     alt: "Illustrative photo placeholder — young leaders in thoughtful conversation",
@@ -141,6 +145,7 @@ export const PUBLIC_IMAGES = {
   students,
   programmes,
   resources,
+  founder,
   sections,
 } as const;
 

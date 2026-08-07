@@ -209,7 +209,9 @@ async function main() {
   // Sample article
   await prisma.article.upsert({
     where: { slug: "bridging-the-leadership-readiness-gap" },
-    update: {},
+    update: {
+      featuredImage: "/images/founder/introducing-edulead-network.jpg",
+    },
     create: {
       title: "Bridging the Leadership Readiness Gap",
       slug: "bridging-the-leadership-readiness-gap",
@@ -222,6 +224,7 @@ async function main() {
       readingTime: 4,
       status: ArticleStatus.PUBLISHED,
       featured: true,
+      featuredImage: "/images/founder/introducing-edulead-network.jpg",
       publishedAt: new Date(),
     },
   });
