@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroSection } from "@/components/public/HeroSection";
@@ -22,7 +21,7 @@ import {
   ROUTES,
 } from "@/lib/constants";
 import { PUBLIC_IMAGES } from "@/lib/public-images";
-import { getPageSections, getSection } from "@/lib/data/settings";
+import { getPageSections, getSection, getSiteSettings } from "@/lib/data/settings";
 import {
   getFeaturedProgrammes,
   getUpcomingEvents,
@@ -30,20 +29,22 @@ import {
   getPublishedArticles,
 } from "@/lib/data/content";
 import { PageKey } from "@prisma/client";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
+import { OrganizationSchemaFromSettings } from "@/components/public/StructuredData";
 
-export const metadata: Metadata = {
-  title: "Home",
-  description:
-    "EduLead Network bridges the gap between education and leadership by equipping young people with mentorship, policy exposure, and career guidance.",
-};
+export const metadata = buildPageMetadata({
+  ...PAGE_SEO.home,
+  useAbsoluteTitle: true,
+});
 
 export default async function HomePage() {
-  const [sections, programmes, events, opportunities, articles] = await Promise.all([
+  const [sections, programmes, events, opportunities, articles, settings] = await Promise.all([
     getPageSections(PageKey.HOME),
     getFeaturedProgrammes(3),
     getUpcomingEvents(3),
     getActiveOpportunities(),
     getPublishedArticles({ limit: 3 }),
+    getSiteSettings(),
   ]);
 
   const visionSection = getSection(sections, "vision-mission");
@@ -56,6 +57,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <OrganizationSchemaFromSettings {...settings} />
       <HeroSection
         variant="editorial"
         headline={getSection(sections, "hero")?.heading ?? undefined}

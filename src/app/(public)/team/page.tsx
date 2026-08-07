@@ -8,11 +8,12 @@ import { ProfilePlaceholder } from "@/components/public/media";
 import { ROUTES } from "@/lib/constants";
 import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getActiveTeamMembers } from "@/lib/data/content";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Team",
-  description: "Meet the people building EduLead Network.",
-};
+export const metadata = buildPageMetadata({
+  ...PAGE_SEO.team,
+  useAbsoluteTitle: true,
+});
 
 export default async function TeamPage() {
   const members = await getActiveTeamMembers();

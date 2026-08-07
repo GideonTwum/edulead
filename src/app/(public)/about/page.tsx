@@ -25,12 +25,12 @@ import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPageSections, getSection } from "@/lib/data/settings";
 import { getActiveTeamMembers } from "@/lib/data/content";
 import { PageKey } from "@prisma/client";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "About",
-  description:
-    "Learn about EduLead Network — our story, vision, mission, and approach to bridging the gap between education and leadership.",
-};
+export const metadata = buildPageMetadata({
+  ...PAGE_SEO.about,
+  useAbsoluteTitle: true,
+});
 
 const DEFAULT_OBJECTIVES = [
   "Provide structured mentorship and coaching for young people navigating career transitions",

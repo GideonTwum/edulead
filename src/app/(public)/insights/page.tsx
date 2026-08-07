@@ -5,12 +5,9 @@ import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { InsightsListing } from "./InsightsListing";
 import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPublishedArticles } from "@/lib/data/content";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Insights",
-  description:
-    "Leadership resources, policy perspectives, and career guidance from EduLead Network.",
-};
+export const metadata = buildPageMetadata(PAGE_SEO.insights);
 
 export default async function InsightsPage() {
   const articles = await getPublishedArticles();

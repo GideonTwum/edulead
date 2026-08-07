@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import { AntdRegistry } from "@/components/AntdRegistry";
+import { SEO, absoluteUrl, buildOpenGraph, buildTwitterMeta, getSiteUrl, truncateDescription } from "@/lib/seo";
 import "./globals.css";
 
 const displayFont = Plus_Jakarta_Sans({
@@ -16,19 +17,26 @@ const bodyFont = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "EduLead Network | Education for Leadership and Change",
-    template: "%s | EduLead Network",
+    default: SEO.defaultTitle,
+    template: SEO.titleTemplate,
   },
-  description:
-    "EduLead Network bridges the gap between education and leadership by equipping young people with mentorship, policy exposure, and career guidance.",
-  openGraph: {
-    type: "website",
-    locale: "en_GB",
-    siteName: "EduLead Network",
-  },
+  description: truncateDescription(SEO.defaultDescription),
+  openGraph: buildOpenGraph({
+    title: SEO.defaultTitle,
+    description: SEO.defaultDescription,
+    path: "/",
+  }),
+  twitter: buildTwitterMeta(SEO.defaultTitle, SEO.defaultDescription),
   robots: { index: true, follow: true },
+  icons: {
+    icon: SEO.defaultOgImage,
+    apple: SEO.defaultOgImage,
+  },
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

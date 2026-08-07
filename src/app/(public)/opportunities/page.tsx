@@ -5,12 +5,9 @@ import { OpportunityFilters } from "@/components/public/OpportunityFilters";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getActiveOpportunities } from "@/lib/data/content";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Opportunities",
-  description:
-    "Browse scholarships, fellowships, internships, and leadership opportunities curated for young people by EduLead Network.",
-};
+export const metadata = buildPageMetadata(PAGE_SEO.opportunities);
 
 export default async function OpportunitiesPage() {
   const opportunities = await getActiveOpportunities({ includeExpired: true });

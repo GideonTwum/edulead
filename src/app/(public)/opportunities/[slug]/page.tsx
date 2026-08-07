@@ -7,7 +7,9 @@ import { RichTextRenderer } from "@/components/public/RichTextRenderer";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { ROUTES } from "@/lib/constants";
 import { getOpportunityBySlug } from "@/lib/data/content";
+import { buildDynamicMetadata } from "@/lib/seo";
 import { formatDate, isDeadlinePassed } from "@/lib/utils";
+import { BreadcrumbSchemaFromPaths } from "@/components/public/StructuredData";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -29,12 +31,14 @@ const typeLabels: Record<string, string> = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const opportunity = await getOpportunityBySlug(slug);
-  if (!opportunity) return { title: "Opportunity Not Found" };
+  if (!opportunity) return { title: "Opportunity Not Found", robots: { index: false, follow: false } };
 
-  return {
+  return buildDynamicMetadata({
     title: opportunity.seoTitle ?? opportunity.title,
     description: opportunity.seoDescription ?? opportunity.excerpt,
-  };
+    path: ROUTES.opportunity(opportunity.slug),
+    image: opportunity.featuredImage,
+  });
 }
 
 export default async function OpportunityDetailPage({ params }: Props) {
@@ -46,6 +50,13 @@ export default async function OpportunityDetailPage({ params }: Props) {
 
   return (
     <>
+      <BreadcrumbSchemaFromPaths
+        crumbs={[
+          { name: "Opportunities", path: ROUTES.opportunities },
+          { name: opportunity.title },
+        ]}
+      />
+
       <HeroSection headline={opportunity.title} subtext={opportunity.excerpt} />
 
       <section className="section-padding">

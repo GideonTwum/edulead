@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/public/HeroSection";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy policy for EduLead Network.",
-};
+export const metadata = buildPageMetadata(PAGE_SEO.privacy);
 
 export default function PrivacyPage() {
   return (

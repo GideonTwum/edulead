@@ -8,12 +8,9 @@ import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { ROUTES } from "@/lib/constants";
 import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPublishedEvents } from "@/lib/data/content";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Events",
-  description:
-    "Upcoming workshops, policy dialogues, and leadership events from EduLead Network.",
-};
+export const metadata = buildPageMetadata(PAGE_SEO.events);
 
 export default async function EventsPage() {
   const events = await getPublishedEvents();

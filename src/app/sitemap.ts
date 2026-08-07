@@ -30,7 +30,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       prisma.programme.findMany({ where: { published: true, deletedAt: null }, select: { slug: true, updatedAt: true } }),
       prisma.opportunity.findMany({ where: { published: true, deletedAt: null }, select: { slug: true, updatedAt: true } }),
       prisma.event.findMany({ where: { published: true, deletedAt: null }, select: { slug: true, updatedAt: true } }),
-      prisma.article.findMany({ where: { status: "PUBLISHED", deletedAt: null }, select: { slug: true, updatedAt: true } }),
+      prisma.article.findMany({
+        where: {
+          status: "PUBLISHED",
+          deletedAt: null,
+          publishedAt: { lte: new Date() },
+        },
+        select: { slug: true, updatedAt: true },
+      }),
     ]);
 
     const dynamicPages = [

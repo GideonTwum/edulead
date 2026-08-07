@@ -9,12 +9,12 @@ import { JOIN_PATHWAYS } from "@/lib/constants";
 import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPageSections, getSection } from "@/lib/data/settings";
 import { PageKey } from "@prisma/client";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Join Us",
-  description:
-    "Join EduLead Network as a young person, mentor, volunteer, partner, or supporter.",
-};
+export const metadata = buildPageMetadata({
+  ...PAGE_SEO.join,
+  useAbsoluteTitle: true,
+});
 
 export default async function JoinPage() {
   const sections = await getPageSections(PageKey.JOIN);

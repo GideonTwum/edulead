@@ -7,11 +7,12 @@ import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { SocialLinks } from "@/components/public/SocialLinks";
 import { getSiteSettings, getPageSections, getSection } from "@/lib/data/settings";
 import { PageKey } from "@prisma/client";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch with EduLead Network — we welcome enquiries about programmes, partnerships, and more.",
-};
+export const metadata = buildPageMetadata({
+  ...PAGE_SEO.contact,
+  useAbsoluteTitle: true,
+});
 
 export default async function ContactPage() {
   const [settings, sections] = await Promise.all([getSiteSettings(), getPageSections(PageKey.CONTACT)]);

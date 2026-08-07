@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/public/HeroSection";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Terms of Use",
-  description: "Terms of use for the EduLead Network website.",
-};
+export const metadata = buildPageMetadata(PAGE_SEO.terms);
 
 export default function TermsPage() {
   return (

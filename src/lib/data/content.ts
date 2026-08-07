@@ -154,7 +154,12 @@ export async function getPublishedArticles(filters?: { category?: string; search
 export async function getArticleBySlug(slug: string) {
   try {
     return await prisma.article.findFirst({
-      where: { slug, status: ArticleStatus.PUBLISHED, deletedAt: null },
+      where: {
+        slug,
+        status: ArticleStatus.PUBLISHED,
+        deletedAt: null,
+        publishedAt: { lte: new Date() },
+      },
       include: { category: true },
     });
   } catch {

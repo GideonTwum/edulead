@@ -10,12 +10,9 @@ import { BackgroundOverlay } from "@/components/public/media";
 import { ROUTES } from "@/lib/constants";
 import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPublishedProgrammes } from "@/lib/data/content";
+import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Programmes",
-  description:
-    "Explore EduLead Network's leadership development programmes — mentorship, policy training, and career guidance for young people.",
-};
+export const metadata = buildPageMetadata(PAGE_SEO.programmes);
 
 export default async function ProgrammesPage() {
   const programmes = await getPublishedProgrammes();

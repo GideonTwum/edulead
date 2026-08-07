@@ -9,7 +9,9 @@ import { EventRegistrationForm } from "@/components/public/EventRegistrationForm
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { ROUTES } from "@/lib/constants";
 import { getEventBySlug } from "@/lib/data/content";
+import { absoluteUrl, buildDynamicMetadata } from "@/lib/seo";
 import { formatDate } from "@/lib/utils";
+import { BreadcrumbSchemaFromPaths, EventSchema } from "@/components/public/StructuredData";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -29,12 +31,14 @@ const typeLabels: Record<string, string> = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const event = await getEventBySlug(slug);
-  if (!event) return { title: "Event Not Found" };
+  if (!event) return { title: "Event Not Found", robots: { index: false, follow: false } };
 
-  return {
+  return buildDynamicMetadata({
     title: event.seoTitle ?? event.title,
     description: event.seoDescription ?? event.excerpt,
-  };
+    path: ROUTES.event(event.slug),
+    image: event.featuredImage,
+  });
 }
 
 export default async function EventDetailPage({ params }: Props) {
@@ -50,6 +54,24 @@ export default async function EventDetailPage({ params }: Props) {
 
   return (
     <>
+      <EventSchema
+        name={event.title}
+        description={event.seoDescription ?? event.excerpt}
+        startDate={event.date.toISOString()}
+        endDate={event.endDate?.toISOString()}
+        venue={event.venue}
+        onlineLink={event.onlineLink}
+        url={absoluteUrl(ROUTES.event(event.slug))}
+        image={event.featuredImage}
+        status={event.status}
+      />
+      <BreadcrumbSchemaFromPaths
+        crumbs={[
+          { name: "Events", path: ROUTES.events },
+          { name: event.title },
+        ]}
+      />
+
       <HeroSection headline={event.title} subtext={event.excerpt} />
 
       <section className="section-padding">
@@ -161,9 +183,12 @@ export default async function EventDetailPage({ params }: Props) {
             </aside>
           </div>
 
-          <div className="mt-12 text-center">
+          <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href={ROUTES.events} className="btn-secondary">
               ← Back to Events
+            </Link>
+            <Link href={ROUTES.join} className="btn-primary">
+              Join the Movement
             </Link>
           </div>
         </div>

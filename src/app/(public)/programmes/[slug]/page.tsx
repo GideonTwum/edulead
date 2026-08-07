@@ -11,7 +11,9 @@ import { EditorialImage } from "@/components/public/media";
 import { ROUTES } from "@/lib/constants";
 import { getProgrammePlaceholder, resolveImageSrc } from "@/lib/public-images";
 import { getProgrammeBySlug, getPublishedProgrammes } from "@/lib/data/content";
+import { buildDynamicMetadata } from "@/lib/seo";
 import { formatDate, cn } from "@/lib/utils";
+import { BreadcrumbSchemaFromPaths } from "@/components/public/StructuredData";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -20,12 +22,16 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const programme = await getProgrammeBySlug(slug);
-  if (!programme) return { title: "Programme Not Found" };
+  if (!programme) return { title: "Programme Not Found", robots: { index: false, follow: false } };
 
-  return {
+  const image = resolveImageSrc(programme.featuredImage, getProgrammePlaceholder(programme.category));
+
+  return buildDynamicMetadata({
     title: programme.seoTitle ?? programme.title,
     description: programme.seoDescription ?? programme.excerpt,
-  };
+    path: ROUTES.programme(programme.slug),
+    image: programme.featuredImage ?? image.src,
+  });
 }
 
 const statusLabels: Record<string, string> = {
@@ -64,6 +70,13 @@ export default async function ProgrammeDetailPage({ params }: Props) {
 
   return (
     <>
+      <BreadcrumbSchemaFromPaths
+        crumbs={[
+          { name: "Programmes", path: ROUTES.programmes },
+          { name: programme.title },
+        ]}
+      />
+
       <section className="relative overflow-hidden bg-brand-navy pb-8 pt-6 md:pb-12">
         <div className="container-brand">
           <Breadcrumbs

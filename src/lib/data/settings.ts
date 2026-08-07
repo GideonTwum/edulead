@@ -5,6 +5,7 @@ const defaultSettings = {
   organisationName: "EduLead Network",
   tagline: "Education for Leadership and Change",
   logoUrl: "/logo.jpeg",
+  faviconUrl: null as string | null,
   generalEmail: null as string | null,
   phone: null as string | null,
   whatsapp: null as string | null,
@@ -16,9 +17,9 @@ const defaultSettings = {
   youtubeUrl: null as string | null,
   footerText: null as string | null,
   googleAnalyticsId: null as string | null,
-  defaultSeoTitle: "EduLead Network | Education for Leadership and Change",
+  defaultSeoTitle: "EduLead Network | Education, Leadership & Youth Development",
   defaultSeoDescription:
-    "EduLead Network bridges the gap between education and leadership by equipping young people with mentorship, policy exposure, and career guidance.",
+    "EduLead Network develops young leaders through mentorship, leadership education, policy exposure, career guidance and opportunities for meaningful societal impact.",
 };
 
 export async function getSiteSettings() {
