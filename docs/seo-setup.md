@@ -104,7 +104,9 @@ Publish original, useful articles consistently. SEO supports discovery; quality 
 - [ ] Request indexing for homepage and key landing pages
 - [ ] Configure GA4 if analytics are desired
 - [ ] Add verified social profile URLs in Admin → Settings
-- [ ] Ensure `/logo.jpeg` (or configured logo/favicon) is deployed for social previews
+- [ ] Ensure favicon assets are deployed: `/favicon.ico`, `/icon.png`, `/apple-icon.png`
+- [ ] After deploy, verify `https://www.eduleadnetwork.com/favicon.ico` returns HTTP 200
+- [ ] In Search Console, use URL Inspection on the homepage to refresh favicon and title crawl
 - [ ] Build credible backlinks from partner organisations, universities and leadership networks
 - [ ] Publish useful original Insights content on a regular cadence
 

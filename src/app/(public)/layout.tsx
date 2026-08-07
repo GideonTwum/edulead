@@ -1,22 +1,8 @@
-import type { Metadata } from "next";
 import { PublicHeader } from "@/components/public/navigation/PublicHeader";
 import { Footer } from "@/components/public/Footer";
 import { GoogleAnalytics } from "@/components/public/GoogleAnalytics";
 import { getSiteSettings, getAnnouncement } from "@/lib/data/settings";
 import { env } from "@/lib/env";
-import { SEO } from "@/lib/seo";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSiteSettings();
-  const favicon = settings.faviconUrl || settings.logoUrl || SEO.defaultOgImage;
-
-  return {
-    icons: {
-      icon: favicon,
-      apple: favicon,
-    },
-  };
-}
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const [settings, announcement] = await Promise.all([getSiteSettings(), getAnnouncement()]);
