@@ -9,7 +9,10 @@ export const ROUTES = {
   event: (slug: string) => `/events/${slug}`,
   insights: "/insights",
   insight: (slug: string) => `/insights/${slug}`,
+  publications: "/publications",
+  publication: (slug: string) => `/publications/${slug}`,
   team: "/team",
+  teamMember: (slug: string) => `/team/${slug}`,
   join: "/join",
   contact: "/contact",
   privacy: "/privacy",
@@ -34,12 +37,9 @@ export const ROUTES = {
 export const NAV_ITEMS = [
   { label: "Home", href: ROUTES.home },
   { label: "About", href: ROUTES.about },
-  { label: "Programmes", href: ROUTES.programmes },
-  { label: "Opportunities", href: ROUTES.opportunities },
-  { label: "Events", href: ROUTES.events },
-  { label: "Insights", href: ROUTES.insights },
+  { label: "Events & Media", href: ROUTES.events },
+  { label: "Publications", href: ROUTES.publications },
   { label: "Team", href: ROUTES.team },
-  { label: "Join Us", href: ROUTES.join },
   { label: "Contact", href: ROUTES.contact },
 ] as const;
 

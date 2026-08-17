@@ -28,7 +28,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
           />
         ) : (
           <div className="flex h-full items-center justify-center gradient-navy">
-            <span className="font-display text-xl font-bold text-brand-green">Insights</span>
+            <span className="font-display text-xl font-bold text-brand-green">Publications</span>
           </div>
         )}
         {(article.categoryLabel || article.category?.name) && (
@@ -55,10 +55,10 @@ export function ArticleCard({ article }: ArticleCardProps) {
         </h3>
         <p className="mt-2 text-sm text-brand-grey line-clamp-2">{article.excerpt}</p>
         <Link
-          href={ROUTES.insight(article.slug)}
+          href={ROUTES.publication(article.slug)}
           className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-navy group-hover:text-brand-green-dark"
         >
-          Read article <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          Read publication <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
     </motion.article>

@@ -178,6 +178,16 @@ export async function getActiveTeamMembers() {
   }
 }
 
+export async function getTeamMemberBySlug(slug: string) {
+  try {
+    return await prisma.teamMember.findFirst({
+      where: { slug, active: true },
+    });
+  } catch {
+    return null;
+  }
+}
+
 export async function getDashboardStats() {
   try {
     const [

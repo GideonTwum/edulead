@@ -25,7 +25,7 @@ export default async function ContactPage() {
         headline={hero?.heading ?? "Contact Us"}
         subtext={
           hero?.body ??
-          "We welcome enquiries about our programmes, partnerships, events, and how to get involved. As an emerging organisation, we aim to respond within a few business days."
+          "We welcome enquiries about EduLead Network, our events, partnerships, and how to get involved. As an emerging organisation, we aim to respond within a few business days."
         }
       />
 

@@ -7,11 +7,21 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.supabase.co",
       },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: "/insights",
+        destination: "/publications",
+        permanent: true,
+      },
+      {
+        source: "/insights/:slug",
+        destination: "/publications/:slug",
+        permanent: true,
+      },
+    ];
   },
   experimental: {
     serverActions: {

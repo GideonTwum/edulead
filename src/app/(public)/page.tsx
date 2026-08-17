@@ -3,30 +3,22 @@ import { ArrowRight } from "lucide-react";
 import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { FocusAreaCard } from "@/components/public/FocusAreaCard";
-import { ProgrammeCard } from "@/components/public/ProgrammeCard";
 import { EventCard } from "@/components/public/EventCard";
-import { OpportunityCard } from "@/components/public/OpportunityCard";
 import { ArticleCard } from "@/components/public/ArticleCard";
-import { FounderMessage } from "@/components/public/FounderMessage";
-import { FounderIntroductionSection } from "@/components/public/FounderIntroductionSection";
 import { JoinPathCard } from "@/components/public/JoinPathCard";
 import { NewsletterForm } from "@/components/public/NewsletterForm";
 import { EmptyState } from "@/components/public/EmptyState";
-import { AudienceCardsGrid } from "@/components/public/AudienceCardsGrid";
-import { BrandShape, SectionDivider } from "@/components/public/BrandShape";
-import { BackgroundOverlay } from "@/components/public/media";
+import { BrandShape } from "@/components/public/BrandShape";
 import {
   FOCUS_AREAS,
   JOIN_PATHWAYS,
   ROUTES,
 } from "@/lib/constants";
-import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPageSections, getSection, getSiteSettings } from "@/lib/data/settings";
 import {
-  getFeaturedProgrammes,
   getUpcomingEvents,
-  getActiveOpportunities,
   getPublishedArticles,
+  getActiveTeamMembers,
 } from "@/lib/data/content";
 import { PageKey } from "@prisma/client";
 import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
@@ -38,22 +30,22 @@ export const metadata = buildPageMetadata({
 });
 
 export default async function HomePage() {
-  const [sections, programmes, events, opportunities, articles, settings] = await Promise.all([
+  const [sections, events, articles, teamMembers, settings] = await Promise.all([
     getPageSections(PageKey.HOME),
-    getFeaturedProgrammes(3),
-    getUpcomingEvents(3),
-    getActiveOpportunities(),
+    getUpcomingEvents(1),
     getPublishedArticles({ limit: 3 }),
+    getActiveTeamMembers(),
     getSiteSettings(),
   ]);
 
   const visionSection = getSection(sections, "vision-mission");
-  const founderSection = getSection(sections, "founder-message");
   const whySection = getSection(sections, "why-edulead");
-
   const vision = visionSection?.metadata
     ? (visionSection.metadata as { vision?: string; mission?: string })
     : null;
+
+  const featuredEvent = events[0] ?? null;
+  const featuredTeam = teamMembers.slice(0, 3);
 
   return (
     <>
@@ -64,53 +56,56 @@ export default async function HomePage() {
         subtext={getSection(sections, "hero")?.body ?? undefined}
       />
 
-      {/* The Challenge */}
       <section className="section-padding bg-white">
-        <div className="container-brand">
+        <div className="container-brand mx-auto max-w-3xl text-center">
           <SectionHeading
-            eyebrow="The Challenge"
-            title={whySection?.heading ?? "Education Should Prepare Young People to Lead."}
+            eyebrow="Who We Are"
+            title="Education for Leadership and Change"
             description={
               whySection?.body ??
-              "Across many countries, a persistent gap exists between education and leadership readiness. Students gain academic qualifications but often lack structured pathways into policy, governance, and high-impact careers."
+              "EduLead Network connects young people with mentorship, leadership education, policy exposure and career guidance — helping them move from academic achievement into meaningful societal contribution."
             }
-            className="!mb-0"
           />
+          <Link href={ROUTES.about} className="btn-secondary mt-2 inline-flex">
+            Learn About EduLead <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
-      {/* Vision & Mission */}
-      <BackgroundOverlay image={PUBLIC_IMAGES.sections.visionMission} overlay="navy-heavy">
-        <div className="container-brand section-padding">
-          <BrandShape variant="circle" className="right-0 top-0 h-64 w-64 opacity-40" />
-          <div className="relative grid gap-12 lg:grid-cols-2">
-            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
+      <section className="gradient-navy section-padding">
+        <div className="container-brand">
+          <BrandShape variant="circle" className="right-0 top-0 h-64 w-64 opacity-20" />
+          <SectionHeading
+            eyebrow="Our Purpose"
+            title="Vision & Mission"
+            light
+            className="!mb-10"
+          />
+          <div className="relative grid gap-8 lg:grid-cols-2">
+            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8">
               <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-green">Vision</h3>
-              <p className="text-lg leading-relaxed text-white md:text-xl">
+              <p className="text-lg leading-relaxed text-white">
                 {vision?.vision ??
-                  "To develop a generation of young leaders who are equipped with skills, confidence, and networks to shape policy, governance, and societal transformation."}
+                  "To develop a generation of young leaders equipped with skills, confidence, and networks to shape policy, governance, and societal transformation."}
               </p>
             </div>
-            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
+            <div className="rounded-brand-lg border border-white/10 bg-white/10 p-8">
               <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-green">Mission</h3>
-              <p className="text-lg leading-relaxed text-white md:text-xl">
+              <p className="text-lg leading-relaxed text-white">
                 {vision?.mission ??
-                  "EduLead Network exists to bridge the gap between education and leadership by providing structured mentorship, policy exposure, and career development support to young people transitioning from education into public service, governance, and impact-driven careers."}
+                  "EduLead Network exists to bridge the gap between education and leadership by providing structured mentorship, policy exposure, and career development support to young people."}
               </p>
             </div>
           </div>
         </div>
-      </BackgroundOverlay>
+      </section>
 
-      <SectionDivider />
-
-      {/* Focus Areas */}
       <section id="focus-areas" className="section-padding">
         <div className="container-brand">
           <SectionHeading
             eyebrow="What We Do"
             title="Our Focus Areas"
-            description="EduLead Network is being built around six pillars of leadership development for young people."
+            description="EduLead Network supports youth leadership through mentorship, policy dialogue, career guidance and civic engagement."
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {FOCUS_AREAS.map((area) => (
@@ -120,35 +115,30 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Planned Programmes */}
-      <section className="section-padding bg-white">
+      <section className="section-padding bg-brand-off-white">
         <div className="container-brand">
           <SectionHeading
-            eyebrow="What We Are Building"
-            title="Our Planned Programmes"
-            description="These are the areas of engagement we are developing for young leaders."
+            eyebrow="Events & Media"
+            title="Upcoming Event"
+            description="Join EduLead Network for leadership conversations, expos and policy dialogues."
+            align="left"
           />
-          {programmes.length > 0 ? (
-            <>
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {programmes.map((p) => (
-                  <ProgrammeCard key={p.id} programme={p} />
-                ))}
-              </div>
-              <div className="mt-10 text-center">
-                <Link href={ROUTES.programmes} className="btn-secondary">
-                  View All Programmes <ArrowRight className="h-4 w-4" />
+          {featuredEvent ? (
+            <div className="max-w-2xl">
+              <EventCard event={featuredEvent} />
+              <div className="mt-8">
+                <Link href={ROUTES.events} className="btn-secondary">
+                  View Events & Media <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-            </>
+            </div>
           ) : (
             <EmptyState
-              title="Programmes Coming Soon"
-              description="We are designing our first leadership development programmes. Join our newsletter to be informed when they launch."
-              image={PUBLIC_IMAGES.programmes.default}
+              title="Events Coming Soon"
+              description="Our upcoming events will be announced here. Join our community to stay informed."
               action={
-                <Link href="#newsletter" className="btn-primary">
-                  Subscribe to Updates
+                <Link href={ROUTES.join} className="btn-primary">
+                  Join the Movement
                 </Link>
               }
             />
@@ -156,130 +146,46 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <FounderIntroductionSection />
-
-      {/* Who EduLead is For */}
-      <section className="section-padding">
-        <div className="container-brand">
-          <SectionHeading
-            eyebrow="Who We Serve"
-            title="Who EduLead Is For"
-            description="EduLead Network is designed for young people at various stages of their leadership journey."
-          />
-          <AudienceCardsGrid />
-        </div>
-      </section>
-
-      {founderSection && (
+      {articles.length > 0 && (
         <section className="section-padding bg-white">
           <div className="container-brand">
-            <SectionHeading eyebrow="Leadership" title="Founder's Message" />
-            <FounderMessage
-              name={founderSection.heading ?? ""}
-              title={founderSection.subheading ?? ""}
-              message={founderSection.body ?? ""}
-              photoUrl={founderSection.imageUrl}
-              linkedinUrl={founderSection.buttonUrl}
+            <SectionHeading
+              eyebrow="Publications"
+              title="Latest Publications"
+              description="Articles, commentary and resources from EduLead Network."
+              align="left"
             />
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {articles.map((a) => (
+                <ArticleCard key={a.id} article={a} />
+              ))}
+            </div>
+            <div className="mt-10">
+              <Link href={ROUTES.publications} className="btn-secondary">
+                View All Publications <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </section>
       )}
 
-      {/* Upcoming Events */}
-      <section className="section-padding">
-        <div className="container-brand">
-          <SectionHeading eyebrow="Events" title="Upcoming Events" />
-          {events.length > 0 ? (
-            <>
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {events.map((e) => (
-                  <EventCard key={e.id} event={e} />
-                ))}
-              </div>
-              <div className="mt-10 text-center">
-                <Link href={ROUTES.events} className="btn-secondary">
-                  View All Events
-                </Link>
-              </div>
-            </>
-          ) : (
-            <EmptyState
-              title="Events Coming Soon"
-              description="We are preparing our first series of leadership conversations. Join our newsletter to be informed when registration opens."
-              image={PUBLIC_IMAGES.resources.events}
-              action={
-                <Link href="#newsletter" className="btn-primary">
-                  Join Newsletter
-                </Link>
-              }
+      {featuredTeam.length > 0 && (
+        <section className="section-padding bg-brand-off-white">
+          <div className="container-brand text-center">
+            <SectionHeading
+              eyebrow="People"
+              title="Meet the Team"
+              description="The people supporting EduLead Network's mission to develop youth leaders."
             />
-          )}
-        </div>
-      </section>
+            <Link href={ROUTES.team} className="btn-primary inline-flex">
+              Meet the Full Team <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+      )}
 
-      {/* Latest Opportunities */}
-      <section className="section-padding bg-white">
+      <section className="gradient-navy section-padding">
         <div className="container-brand">
-          <SectionHeading eyebrow="Opportunities" title="Latest Opportunities" />
-          {opportunities.length > 0 ? (
-            <>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {opportunities.slice(0, 3).map((o) => (
-                  <OpportunityCard key={o.id} opportunity={o} />
-                ))}
-              </div>
-              <div className="mt-10 text-center">
-                <Link href={ROUTES.opportunities} className="btn-secondary">
-                  Browse All Opportunities
-                </Link>
-              </div>
-            </>
-          ) : (
-            <EmptyState
-              title="Opportunities Directory"
-              description="We are curating leadership opportunities for young people. Check back soon or subscribe for updates."
-              image={PUBLIC_IMAGES.resources.opportunities}
-            />
-          )}
-        </div>
-      </section>
-
-      {/* Latest Insights */}
-      <section className="section-padding">
-        <div className="container-brand">
-          <SectionHeading eyebrow="Insights" title="Latest Insights" />
-          {articles.length > 0 ? (
-            <>
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {articles.map((a) => (
-                  <ArticleCard key={a.id} article={a} />
-                ))}
-              </div>
-              <div className="mt-10 text-center">
-                <Link href={ROUTES.insights} className="btn-secondary">
-                  Read More Insights
-                </Link>
-              </div>
-            </>
-          ) : (
-            <EmptyState
-              title="Insights Coming Soon"
-              description="We will share leadership resources, policy perspectives, and career guidance articles here."
-              image={PUBLIC_IMAGES.resources.insights}
-            />
-          )}
-        </div>
-      </section>
-
-      {/* Join the Movement */}
-      <BackgroundOverlay
-        image={PUBLIC_IMAGES.sections.join}
-        overlay="join"
-        objectPosition="center 42%"
-        loading="lazy"
-        minHeight="min-h-0"
-      >
-        <div className="container-brand py-20 md:py-24 lg:py-32 xl:py-36">
           <SectionHeading
             eyebrow="Get Involved"
             title="Join the Movement"
@@ -288,20 +194,17 @@ export default async function HomePage() {
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {JOIN_PATHWAYS.map((path) => (
-              <JoinPathCard key={path.type} {...path} onPhotoBackground />
+              <JoinPathCard key={path.type} {...path} />
             ))}
           </div>
         </div>
-      </BackgroundOverlay>
+      </section>
 
-      {/* Newsletter */}
-      <BackgroundOverlay image={PUBLIC_IMAGES.sections.newsletter} overlay="navy" minHeight="min-h-0">
-        <div className="container-brand section-padding">
-          <div className="mx-auto max-w-2xl">
-            <NewsletterForm />
-          </div>
+      <section className="section-padding bg-brand-off-white" id="newsletter">
+        <div className="container-brand mx-auto max-w-2xl">
+          <NewsletterForm />
         </div>
-      </BackgroundOverlay>
+      </section>
     </>
   );
 }

@@ -6,7 +6,6 @@ import { JoinPathCard } from "@/components/public/JoinPathCard";
 import { JoinForm } from "@/components/public/JoinForm";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { JOIN_PATHWAYS } from "@/lib/constants";
-import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPageSections, getSection } from "@/lib/data/settings";
 import { PageKey } from "@prisma/client";
 import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
@@ -24,8 +23,7 @@ export default async function JoinPage() {
   return (
     <>
       <HeroSection
-        variant="banner"
-        bannerImage={PUBLIC_IMAGES.sections.join}
+        variant="editorial"
         eyebrow="Get Involved"
         headline={hero?.heading ?? "Join the Movement"}
         subtext={

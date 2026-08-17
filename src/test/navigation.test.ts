@@ -1,48 +1,40 @@
 import { describe, it, expect } from "vitest";
 import {
-  PROGRAMMES_DROPDOWN,
-  RESOURCES_DROPDOWN,
-  isContactLinkActive,
-  isPrimaryLinkActive,
+  PUBLIC_NAV_LINKS,
+  JOIN_MOVEMENT_CTA,
+  isNavLinkActive,
 } from "@/lib/navigation/public-nav";
 import { ROUTES } from "@/lib/constants";
 
 describe("public navigation config", () => {
-  it("marks programmes dropdown active for programme routes", () => {
-    expect(PROGRAMMES_DROPDOWN.isActive(ROUTES.programmes)).toBe(true);
-    expect(PROGRAMMES_DROPDOWN.isActive("/programmes/youth-leadership-mentorship-programme")).toBe(true);
-    expect(PROGRAMMES_DROPDOWN.isActive(ROUTES.opportunities)).toBe(false);
+  it("exposes simplified primary navigation", () => {
+    const labels = PUBLIC_NAV_LINKS.map((item) => item.label);
+    expect(labels).toEqual([
+      "Home",
+      "About",
+      "Events & Media",
+      "Publications",
+      "Team",
+      "Contact",
+    ]);
   });
 
-  it("marks resources dropdown active for resource routes", () => {
-    expect(RESOURCES_DROPDOWN.isActive(ROUTES.opportunities)).toBe(true);
-    expect(RESOURCES_DROPDOWN.isActive("/events/sample-event")).toBe(true);
-    expect(RESOURCES_DROPDOWN.isActive(ROUTES.insights)).toBe(true);
-    expect(RESOURCES_DROPDOWN.isActive(ROUTES.team)).toBe(true);
-    expect(RESOURCES_DROPDOWN.isActive(ROUTES.programmes)).toBe(false);
+  it("does not include programmes or opportunities", () => {
+    const hrefs = PUBLIC_NAV_LINKS.map((item) => item.href);
+    expect(hrefs).not.toContain(ROUTES.programmes);
+    expect(hrefs).not.toContain(ROUTES.opportunities);
   });
 
-  it("detects active primary links", () => {
-    expect(isPrimaryLinkActive("/", "/")).toBe(true);
-    expect(isPrimaryLinkActive("/about", ROUTES.about)).toBe(true);
-    expect(isPrimaryLinkActive("/", ROUTES.about)).toBe(false);
+  it("detects active nav links", () => {
+    expect(isNavLinkActive("/", ROUTES.home)).toBe(true);
+    expect(isNavLinkActive("/about", ROUTES.about)).toBe(true);
+    expect(isNavLinkActive("/events/sample", ROUTES.events)).toBe(true);
+    expect(isNavLinkActive("/publications/sample", ROUTES.publications)).toBe(true);
+    expect(isNavLinkActive("/team/elizabeth-dansoa-osei", ROUTES.team)).toBe(true);
   });
 
-  it("detects active contact link", () => {
-    expect(isContactLinkActive(ROUTES.contact)).toBe(true);
-    expect(isContactLinkActive(ROUTES.join)).toBe(false);
-  });
-
-  it("includes seeded programme destinations", () => {
-    const hrefs = PROGRAMMES_DROPDOWN.items.map((item) => item.href);
-    expect(hrefs).toContain("/programmes/youth-leadership-mentorship-programme");
-    expect(hrefs).toContain("/programmes/youth-policy-dialogue-series");
-    expect(hrefs).toContain(ROUTES.join);
-  });
-
-  it("keeps opportunities under resources", () => {
-    const hrefs = RESOURCES_DROPDOWN.items.map((item) => item.href);
-    expect(hrefs).toContain(ROUTES.opportunities);
-    expect(hrefs).not.toContain(ROUTES.join);
+  it("keeps join CTA separate from primary nav", () => {
+    expect(JOIN_MOVEMENT_CTA.href).toBe(ROUTES.join);
+    expect(PUBLIC_NAV_LINKS.some((item) => item.href === ROUTES.join)).toBe(false);
   });
 });

@@ -9,10 +9,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     ROUTES.home,
     ROUTES.about,
-    ROUTES.programmes,
-    ROUTES.opportunities,
     ROUTES.events,
-    ROUTES.insights,
+    ROUTES.publications,
     ROUTES.team,
     ROUTES.join,
     ROUTES.contact,
@@ -26,9 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   try {
-    const [programmes, opportunities, events, articles] = await Promise.all([
-      prisma.programme.findMany({ where: { published: true, deletedAt: null }, select: { slug: true, updatedAt: true } }),
-      prisma.opportunity.findMany({ where: { published: true, deletedAt: null }, select: { slug: true, updatedAt: true } }),
+    const [events, articles, teamMembers] = await Promise.all([
       prisma.event.findMany({ where: { published: true, deletedAt: null }, select: { slug: true, updatedAt: true } }),
       prisma.article.findMany({
         where: {
@@ -38,21 +34,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
         select: { slug: true, updatedAt: true },
       }),
+      prisma.teamMember.findMany({ where: { active: true }, select: { slug: true, updatedAt: true } }),
     ]);
 
     const dynamicPages = [
-      ...programmes.map((p) => ({
-        url: `${baseUrl}${ROUTES.programme(p.slug)}`,
-        lastModified: p.updatedAt,
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      })),
-      ...opportunities.map((o) => ({
-        url: `${baseUrl}${ROUTES.opportunity(o.slug)}`,
-        lastModified: o.updatedAt,
-        changeFrequency: "daily" as const,
-        priority: 0.7,
-      })),
       ...events.map((e) => ({
         url: `${baseUrl}${ROUTES.event(e.slug)}`,
         lastModified: e.updatedAt,
@@ -60,9 +45,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       })),
       ...articles.map((a) => ({
-        url: `${baseUrl}${ROUTES.insight(a.slug)}`,
+        url: `${baseUrl}${ROUTES.publication(a.slug)}`,
         lastModified: a.updatedAt,
         changeFrequency: "weekly" as const,
+        priority: 0.6,
+      })),
+      ...teamMembers.map((m) => ({
+        url: `${baseUrl}${ROUTES.teamMember(m.slug)}`,
+        lastModified: m.updatedAt,
+        changeFrequency: "monthly" as const,
         priority: 0.6,
       })),
     ];

@@ -60,7 +60,7 @@ export async function createArticle(data: Record<string, unknown>): Promise<Acti
     });
 
     await logAudit(adminId, "CREATE", "Article", created.id);
-    await revalidatePublicPaths(["/insights", `/insights/${slug}`]);
+    await revalidatePublicPaths(["/publications", `/publications/${slug}`, "/"]);
     return { success: true, data: { id: created.id } };
   } catch {
     return { success: false, error: "Failed to create article" };
@@ -103,7 +103,7 @@ export async function updateArticle(id: string, data: Record<string, unknown>): 
     });
 
     await logAudit(adminId, "UPDATE", "Article", id);
-    await revalidatePublicPaths(["/insights", `/insights/${updated.slug}`]);
+    await revalidatePublicPaths(["/publications", `/publications/${updated.slug}`, "/"]);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update article" };
@@ -115,7 +115,7 @@ export async function deleteArticle(id: string): Promise<ActionResult> {
     const adminId = await getAdminId();
     await prisma.article.update({ where: { id }, data: { deletedAt: new Date(), status: ArticleStatus.ARCHIVED } });
     await logAudit(adminId, "DELETE", "Article", id);
-    await revalidatePublicPaths(["/insights"]);
+    await revalidatePublicPaths(["/publications", "/"]);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete article" };

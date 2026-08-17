@@ -67,7 +67,7 @@ export default async function EventDetailPage({ params }: Props) {
       />
       <BreadcrumbSchemaFromPaths
         crumbs={[
-          { name: "Events", path: ROUTES.events },
+          { name: "Events & Media", path: ROUTES.events },
           { name: event.title },
         ]}
       />
@@ -78,16 +78,23 @@ export default async function EventDetailPage({ params }: Props) {
         <div className="container-brand">
           <Breadcrumbs
             items={[
-              { label: "Events", href: ROUTES.events },
+              { label: "Events & Media", href: ROUTES.events },
               { label: event.title },
             ]}
           />
 
           <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
             <div>
-              {event.featuredImage && (
+              {event.featuredImage ? (
                 <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-brand-lg">
                   <Image src={event.featuredImage} alt={event.title} fill className="object-cover" priority />
+                </div>
+              ) : (
+                <div
+                  className="relative mb-8 flex aspect-[16/9] items-center justify-center overflow-hidden rounded-brand-lg gradient-navy"
+                  aria-hidden="true"
+                >
+                  <Calendar className="h-16 w-16 text-brand-green" />
                 </div>
               )}
 
@@ -185,7 +192,7 @@ export default async function EventDetailPage({ params }: Props) {
 
           <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link href={ROUTES.events} className="btn-secondary">
-              ← Back to Events
+              ← Back to Events & Media
             </Link>
             <Link href={ROUTES.join} className="btn-primary">
               Join the Movement

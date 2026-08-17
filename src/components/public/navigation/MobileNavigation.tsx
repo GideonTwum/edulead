@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, X } from "lucide-react";
+import { X } from "lucide-react";
 import {
-  PROGRAMMES_DROPDOWN,
-  PUBLIC_CONTACT_LINK,
-  PUBLIC_PRIMARY_LINKS,
-  RESOURCES_DROPDOWN,
-  isContactLinkActive,
-  isPrimaryLinkActive,
+  JOIN_MOVEMENT_CTA,
+  PUBLIC_NAV_LINKS,
+  isNavLinkActive,
 } from "@/lib/navigation/public-nav";
-import type { PublicNavDropdown } from "@/lib/navigation/public-nav";
 import { HeaderLogo } from "./HeaderLogo";
 import { JoinMovementButton } from "./JoinMovementButton";
 import { cn } from "@/lib/utils";
@@ -25,78 +21,12 @@ interface MobileNavigationProps {
   logoUrl: string;
 }
 
-function MobileAccordionSection({
-  menu,
-  pathname,
-  onNavigate,
-}: {
-  menu: PublicNavDropdown;
-  pathname: string;
-  onNavigate: () => void;
-}) {
-  const [expanded, setExpanded] = useState(menu.isActive(pathname));
-  const sectionId = `mobile-${menu.id}`;
-
-  return (
-    <div className="border-b border-brand-border">
-      <button
-        type="button"
-        aria-expanded={expanded}
-        aria-controls={sectionId}
-        onClick={() => setExpanded((current) => !current)}
-        className="flex w-full items-center justify-between px-4 py-4 text-left text-base font-semibold text-brand-navy"
-      >
-        {menu.label}
-        <ChevronDown
-          aria-hidden
-          className={cn("h-5 w-5 transition-transform", expanded && "rotate-180")}
-        />
-      </button>
-      {expanded ? (
-        <ul id={sectionId} className="space-y-1 px-3 pb-3">
-          {menu.items.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={onNavigate}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "block rounded-lg px-3 py-3 text-sm transition-colors",
-                    active
-                      ? "bg-brand-navy text-white"
-                      : "text-brand-text hover:bg-brand-off-white",
-                  )}
-                >
-                  <span className="block font-medium">{item.label}</span>
-                  {item.description ? (
-                    <span
-                      className={cn(
-                        "mt-1 block text-xs leading-relaxed",
-                        active ? "text-white/80" : "text-brand-grey",
-                      )}
-                    >
-                      {item.description}
-                    </span>
-                  ) : null}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
-    </div>
-  );
-}
-
 export function MobileNavigation({
   open,
   onClose,
   pathname,
   logoUrl,
 }: MobileNavigationProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { prefersReducedMotion } = useMotionConfig();
 
@@ -107,9 +37,7 @@ export function MobileNavigation({
     closeButtonRef.current?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
+      if (event.key === "Escape") onClose();
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -135,7 +63,6 @@ export function MobileNavigation({
           />
           <motion.div
             id="mobile-navigation-panel"
-            ref={panelRef}
             initial={prefersReducedMotion ? false : { x: "100%" }}
             animate={{ x: 0 }}
             exit={prefersReducedMotion ? undefined : { x: "100%" }}
@@ -164,8 +91,8 @@ export function MobileNavigation({
 
             <nav className="flex-1 overflow-y-auto overscroll-contain" aria-label="Mobile navigation">
               <ul className="divide-y divide-brand-border">
-                {PUBLIC_PRIMARY_LINKS.map((item) => {
-                  const active = isPrimaryLinkActive(pathname, item.href);
+                {PUBLIC_NAV_LINKS.map((item) => {
+                  const active = isNavLinkActive(pathname, item.href);
                   return (
                     <li key={item.href}>
                       <Link
@@ -185,23 +112,6 @@ export function MobileNavigation({
                   );
                 })}
               </ul>
-
-              <MobileAccordionSection menu={PROGRAMMES_DROPDOWN} pathname={pathname} onNavigate={onClose} />
-              <MobileAccordionSection menu={RESOURCES_DROPDOWN} pathname={pathname} onNavigate={onClose} />
-
-              <Link
-                href={PUBLIC_CONTACT_LINK.href}
-                onClick={onClose}
-                aria-current={isContactLinkActive(pathname) ? "page" : undefined}
-                className={cn(
-                  "block border-b border-brand-border px-4 py-4 text-base font-medium transition-colors",
-                  isContactLinkActive(pathname)
-                    ? "bg-brand-navy text-white"
-                    : "text-brand-text hover:bg-brand-off-white",
-                )}
-              >
-                {PUBLIC_CONTACT_LINK.label}
-              </Link>
             </nav>
 
             <div className="border-t border-brand-border p-4">
@@ -213,3 +123,5 @@ export function MobileNavigation({
     </AnimatePresence>
   );
 }
+
+export { JOIN_MOVEMENT_CTA };

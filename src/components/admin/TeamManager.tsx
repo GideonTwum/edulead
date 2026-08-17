@@ -94,8 +94,9 @@ export function TeamManager({ members }: TeamManagerProps) {
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Row gutter={16}>
             <Col span={12}><Form.Item name="fullName" label="Full Name" rules={[{ required: true }]}><Input /></Form.Item></Col>
-            <Col span={12}><Form.Item name="role" label="Role" rules={[{ required: true }]}><Input /></Form.Item></Col>
+            <Col span={12}><Form.Item name="slug" label="URL Slug" rules={[{ required: true }]}><Input placeholder="elizabeth-dansoa-osei" /></Form.Item></Col>
           </Row>
+          <Form.Item name="role" label="Role"><Input placeholder="Optional — add when confirmed" /></Form.Item>
           <Form.Item name="biography" label="Biography" rules={[{ required: true }]}><RichTextEditor minHeight={150} /></Form.Item>
           <Form.Item name="profileImage" label="Profile Image"><MediaUploader folder="team" /></Form.Item>
           <Row gutter={16}>

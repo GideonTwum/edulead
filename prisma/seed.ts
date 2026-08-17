@@ -1,4 +1,5 @@
-import { PrismaClient, PageKey, ProgrammeStatus, ProgrammeCategory, ArticleStatus } from "@prisma/client";
+import { PrismaClient, PageKey, ProgrammeStatus, ProgrammeCategory, ArticleStatus, EventType, EventStatus } from "@prisma/client";
+import { TEAM_SEED_MEMBERS } from "./team-seed-data";
 
 const prisma = new PrismaClient();
 
@@ -13,6 +14,7 @@ async function main() {
         organisationName: "EduLead Network",
         tagline: "Education for Leadership and Change",
         logoUrl: "/logo.jpeg",
+        generalEmail: "eduleadnetwork@gmail.com",
         defaultSeoTitle: "EduLead Network | Education for Leadership and Change",
         defaultSeoDescription:
           "EduLead Network bridges the gap between education and leadership by equipping young people with mentorship, policy exposure, and career guidance.",
@@ -165,7 +167,7 @@ async function main() {
   // Sample planned programme
   await prisma.programme.upsert({
     where: { slug: "youth-leadership-mentorship-programme" },
-    update: {},
+    update: { published: false },
     create: {
       title: "Youth Leadership Mentorship Programme",
       slug: "youth-leadership-mentorship-programme",
@@ -188,7 +190,7 @@ async function main() {
 
   await prisma.programme.upsert({
     where: { slug: "youth-policy-dialogue-series" },
-    update: {},
+    update: { published: false },
     create: {
       title: "Youth Policy Dialogue Series",
       slug: "youth-policy-dialogue-series",
@@ -226,6 +228,64 @@ async function main() {
       featured: true,
       featuredImage: "/images/founder/introducing-edulead-network.jpg",
       publishedAt: new Date(),
+    },
+  });
+
+  // Remove stale record if seeded previously with the incorrect slug.
+  await prisma.teamMember.deleteMany({ where: { slug: "hollandswell-donkoh" } });
+
+  for (const member of TEAM_SEED_MEMBERS) {
+    await prisma.teamMember.upsert({
+      where: { slug: member.slug },
+      update: {
+        fullName: member.fullName,
+        role: member.role,
+        biography: member.biography,
+        profileImage: member.profileImage,
+        linkedinUrl: member.linkedinUrl ?? null,
+        email: member.email ?? null,
+        showEmail: member.showEmail ?? false,
+        displayOrder: member.displayOrder,
+        active: true,
+      },
+      create: {
+        slug: member.slug,
+        fullName: member.fullName,
+        role: member.role,
+        biography: member.biography,
+        profileImage: member.profileImage,
+        linkedinUrl: member.linkedinUrl ?? null,
+        email: member.email ?? null,
+        showEmail: member.showEmail ?? false,
+        displayOrder: member.displayOrder,
+        active: true,
+      },
+    });
+  }
+
+  await prisma.event.upsert({
+    where: { slug: "edulead-global-study-abroad-expo-2026" },
+    update: {
+      title: "EduLead Global & Study Abroad Expo",
+      excerpt:
+        "A virtual EduLead Network expo for young people exploring global study pathways and leadership opportunities.",
+      published: true,
+      status: EventStatus.UPCOMING,
+      featured: true,
+    },
+    create: {
+      title: "EduLead Global & Study Abroad Expo",
+      slug: "edulead-global-study-abroad-expo-2026",
+      excerpt:
+        "A virtual EduLead Network expo for young people exploring global study pathways and leadership opportunities.",
+      description:
+        "<p>EduLead Network presents the Global &amp; Study Abroad Expo — a virtual gathering for young people exploring international education and leadership pathways.</p><p><strong>Date:</strong> 5 September 2026</p><p><strong>Format:</strong> Virtual</p><p><strong>Platform:</strong> Microsoft Teams</p><p>Registration details and the official event flyer will be published here when available.</p>",
+      eventType: EventType.CONFERENCE,
+      date: new Date("2026-09-05T12:00:00.000Z"),
+      published: true,
+      featured: true,
+      status: EventStatus.UPCOMING,
+      registrationFormEnabled: false,
     },
   });
 

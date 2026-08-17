@@ -39,10 +39,16 @@ export const PAGE_SEO = {
     path: "/opportunities",
   },
   events: {
-    title: "Youth Leadership Events & Policy Dialogues",
+    title: "Events & Media | EduLead Network",
     description:
-      "Upcoming workshops, policy dialogues, mentorship sessions and leadership events from EduLead Network.",
+      "Upcoming EduLead Network events, leadership expos, policy dialogues and event media highlights.",
     path: "/events",
+  },
+  publications: {
+    title: "Publications | EduLead Network",
+    description:
+      "Articles, policy perspectives, research and commentary from EduLead Network.",
+    path: "/publications",
   },
   insights: {
     title: "Leadership, Policy & Career Insights",

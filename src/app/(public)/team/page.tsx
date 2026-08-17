@@ -1,12 +1,10 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { HeroSection } from "@/components/public/HeroSection";
+import { ArrowRight } from "lucide-react";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { TeamCard } from "@/components/public/TeamCard";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
-import { ProfilePlaceholder } from "@/components/public/media";
+import { HeroSection } from "@/components/public/HeroSection";
 import { ROUTES } from "@/lib/constants";
-import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getActiveTeamMembers } from "@/lib/data/content";
 import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
@@ -21,11 +19,10 @@ export default async function TeamPage() {
   return (
     <>
       <HeroSection
-        variant="banner"
-        bannerImage={PUBLIC_IMAGES.resources.team}
-        eyebrow="People"
-        headline="Our Team"
-        subtext="Meet the people building EduLead Network — a growing team committed to youth leadership development."
+        variant="editorial"
+        eyebrow="Team"
+        headline="Meet the Team"
+        subtext="The people supporting EduLead Network's mission to develop youth leaders through education, mentorship and civic engagement."
         showCtas={false}
       />
 
@@ -33,29 +30,27 @@ export default async function TeamPage() {
         <div className="container-brand">
           <Breadcrumbs items={[{ label: "Team" }]} />
           <SectionHeading
-            eyebrow="People"
-            title="The EduLead Team"
-            description="We are an emerging organisation building our team. Profiles will be updated as our leadership structure develops."
+            eyebrow="Leadership & Team"
+            title="Meet the Team"
+            description="EduLead Network is supported by a growing team committed to youth leadership, education and societal impact."
             align="left"
           />
 
           {members.length > 0 ? (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {members.map((member) => (
                 <TeamCard key={member.id} member={member} />
               ))}
             </div>
           ) : (
-            <ProfilePlaceholder message="Our leadership team will be introduced soon." />
+            <p className="text-brand-grey">Team profiles will be published here soon.</p>
           )}
 
-          {members.length === 0 && (
-            <div className="mt-8 text-center">
-              <Link href={ROUTES.join} className="btn-primary">
-                Join the Movement
-              </Link>
-            </div>
-          )}
+          <div className="mt-12 text-center">
+            <Link href={ROUTES.contact} className="btn-secondary inline-flex">
+              Contact EduLead Network <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
     </>

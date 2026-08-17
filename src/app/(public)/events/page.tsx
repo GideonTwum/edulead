@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { EventCard } from "@/components/public/EventCard";
 import { EmptyState } from "@/components/public/EmptyState";
 import { Breadcrumbs } from "@/components/public/Breadcrumbs";
 import { ROUTES } from "@/lib/constants";
-import { PUBLIC_IMAGES } from "@/lib/public-images";
 import { getPublishedEvents } from "@/lib/data/content";
 import { buildPageMetadata, PAGE_SEO } from "@/lib/seo";
 
-export const metadata = buildPageMetadata(PAGE_SEO.events);
+export const metadata = buildPageMetadata({
+  ...PAGE_SEO.events,
+  useAbsoluteTitle: true,
+});
 
 export default async function EventsPage() {
   const events = await getPublishedEvents();
@@ -20,28 +23,23 @@ export default async function EventsPage() {
   return (
     <>
       <HeroSection
-        variant="banner"
-        bannerImage={PUBLIC_IMAGES.resources.events}
-        eyebrow="Events & Workshops"
-        headline="Events"
-        subtext="Workshops, policy dialogues, and leadership conversations. We are preparing our first events — register your interest to stay informed."
-        showCtas
-        primaryCtaHref={ROUTES.join}
-        primaryCtaLabel="Register Interest"
-        secondaryCtaHref="#events-list"
-        secondaryCtaLabel="View Events"
+        variant="editorial"
+        eyebrow="Events & Media"
+        headline="Events & Media"
+        subtext="Upcoming leadership events, expos and policy dialogues from EduLead Network."
+        showCtas={false}
       />
 
       <section id="events-list" className="section-padding">
         <div className="container-brand">
-          <Breadcrumbs items={[{ label: "Events" }]} />
+          <Breadcrumbs items={[{ label: "Events & Media" }]} />
 
           {upcoming.length > 0 ? (
             <>
               <SectionHeading
                 eyebrow="Upcoming"
                 title="Upcoming Events"
-                description="Register for our upcoming leadership events."
+                description="Register for upcoming EduLead Network events."
                 align="left"
               />
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -53,9 +51,12 @@ export default async function EventsPage() {
           ) : (
             <EmptyState
               title="Events Coming Soon"
-              description="We are preparing our first series of leadership conversations. Join our community to be informed when registration opens."
-              image={PUBLIC_IMAGES.resources.events}
-              action={<Link href={ROUTES.join} className="btn-primary">Join the Movement</Link>}
+              description="Our upcoming events will be announced here."
+              action={
+                <Link href={ROUTES.join} className="btn-primary">
+                  Join the Movement
+                </Link>
+              }
             />
           )}
 
@@ -69,6 +70,19 @@ export default async function EventsPage() {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="section-padding bg-brand-off-white">
+        <div className="container-brand text-center">
+          <SectionHeading
+            eyebrow="Media"
+            title="Event Highlights"
+            description="Event photographs and highlights will appear here as they become available."
+          />
+          <Link href={ROUTES.join} className="btn-secondary inline-flex">
+            Stay Connected <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
     </>

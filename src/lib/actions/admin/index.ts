@@ -101,7 +101,7 @@ export async function createArticle(data: {
   });
 
   await logAudit(profile.id, "CREATE", "Article", article.id);
-  revalidatePath("/insights");
+  revalidatePath("/publications");
   return article;
 }
 
@@ -109,20 +109,37 @@ export async function updateArticle(id: string, data: Record<string, unknown>) {
   const { profile } = await requireAdmin();
   const article = await prisma.article.update({ where: { id }, data: data as never });
   await logAudit(profile.id, "UPDATE", "Article", id);
-  revalidatePath("/insights");
+  revalidatePath("/publications");
   return article;
 }
 
 export async function createTeamMember(data: {
   fullName: string;
-  role: string;
+  slug?: string;
+  role?: string | null;
   biography: string;
   displayOrder?: number;
 }) {
   const { profile } = await requireAdmin();
-  const member = await prisma.teamMember.create({ data });
+  const slug =
+    data.slug ??
+    data.fullName
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  const member = await prisma.teamMember.create({
+    data: {
+      fullName: data.fullName,
+      slug,
+      role: data.role ?? null,
+      biography: data.biography,
+      displayOrder: data.displayOrder ?? 0,
+    },
+  });
   await logAudit(profile.id, "CREATE", "TeamMember", member.id);
   revalidatePath("/team");
+  revalidatePath(`/team/${slug}`);
   return member;
 }
 

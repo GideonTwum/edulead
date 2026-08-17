@@ -375,7 +375,8 @@ model Article {
 model TeamMember {
   id            String   @id @default(cuid())
   fullName      String
-  role          String
+  slug          String   @unique
+  role          String?
   biography     String   @db.Text
   profileImage  String?
   linkedinUrl   String?
