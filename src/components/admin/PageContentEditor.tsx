@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Form, Input, Switch, Button, Card, Select, InputNumber } from "antd";
 import { updatePageContent } from "@/lib/actions/admin/pages";
 import { PageKey } from "@prisma/client";
@@ -17,6 +18,7 @@ interface PageContentEditorProps {
 
 export function PageContentEditor({ sections: initialSections }: PageContentEditorProps) {
   const message = useAdminMessage();
+  const router = useRouter();
   const [filter, setFilter] = useState<PageKey | "ALL">("ALL");
   const [loading, setLoading] = useState<string | null>(null);
 
@@ -39,6 +41,7 @@ export function PageContentEditor({ sections: initialSections }: PageContentEdit
     setLoading(null);
     if (result.success) {
       message.success(`Updated ${section.sectionKey}`);
+      router.refresh();
     } else {
       message.error(result.error);
     }

@@ -4,8 +4,9 @@ import prisma from "@/lib/db";
 import { logAudit } from "@/lib/auth";
 import { EventStatus, EventType } from "@prisma/client";
 import { generateUniqueSlug } from "@/lib/slug";
+import { revalidateEvent } from "@/lib/revalidation";
 import { getAdminId } from "./shared";
-import { parseDate, revalidatePublicPaths, type ActionResult } from "./utils";
+import { parseDate, type ActionResult } from "./utils";
 
 export async function getEvents() {
   await getAdminId();
@@ -58,7 +59,7 @@ export async function createEvent(data: Record<string, unknown>): Promise<Action
     });
 
     await logAudit(adminId, "CREATE", "Event", created.id);
-    await revalidatePublicPaths(["/events", `/events/${slug}`]);
+    revalidateEvent(created.slug);
     return { success: true, data: { id: created.id } };
   } catch {
     return { success: false, error: "Failed to create event" };
@@ -68,6 +69,9 @@ export async function createEvent(data: Record<string, unknown>): Promise<Action
 export async function updateEvent(id: string, data: Record<string, unknown>): Promise<ActionResult> {
   try {
     const adminId = await getAdminId();
+    const existing = await prisma.event.findFirst({ where: { id, deletedAt: null } });
+    if (!existing) return { success: false, error: "Event not found" };
+
     const title = data.title as string | undefined;
     const slug = title ? await generateUniqueSlug(title, "event", id) : undefined;
 
@@ -100,7 +104,7 @@ export async function updateEvent(id: string, data: Record<string, unknown>): Pr
     });
 
     await logAudit(adminId, "UPDATE", "Event", id);
-    await revalidatePublicPaths(["/events", `/events/${updated.slug}`]);
+    revalidateEvent(updated.slug, existing.slug);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update event" };
@@ -110,9 +114,12 @@ export async function updateEvent(id: string, data: Record<string, unknown>): Pr
 export async function deleteEvent(id: string): Promise<ActionResult> {
   try {
     const adminId = await getAdminId();
+    const existing = await prisma.event.findFirst({ where: { id, deletedAt: null } });
+    if (!existing) return { success: false, error: "Event not found" };
+
     await prisma.event.update({ where: { id }, data: { deletedAt: new Date(), published: false } });
     await logAudit(adminId, "DELETE", "Event", id);
-    await revalidatePublicPaths(["/events"]);
+    revalidateEvent(existing.slug);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete event" };

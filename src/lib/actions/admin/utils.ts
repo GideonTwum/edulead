@@ -1,5 +1,3 @@
-import { revalidatePath } from "next/cache";
-
 export type ActionResult<T = void> =
   | { success: true; data?: T }
   | { success: false; error: string };
@@ -17,8 +15,4 @@ export function parseStringArray(value: string | string[] | undefined): string[]
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-}
-
-export async function revalidatePublicPaths(paths: string[] = ["/"]) {
-  paths.forEach((path) => revalidatePath(path));
 }

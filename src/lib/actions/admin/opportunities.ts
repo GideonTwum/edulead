@@ -5,7 +5,7 @@ import { logAudit } from "@/lib/auth";
 import { LocationType, OpportunityStatus, OpportunityType } from "@prisma/client";
 import { generateUniqueSlug } from "@/lib/slug";
 import { getAdminId } from "./shared";
-import { parseDate, parseStringArray, revalidatePublicPaths, type ActionResult } from "./utils";
+import { parseDate, parseStringArray, type ActionResult } from "./utils";
 
 export async function getOpportunities() {
   await getAdminId();
@@ -50,7 +50,6 @@ export async function createOpportunity(data: Record<string, unknown>): Promise<
     });
 
     await logAudit(adminId, "CREATE", "Opportunity", created.id);
-    await revalidatePublicPaths(["/opportunities", `/opportunities/${slug}`]);
     return { success: true, data: { id: created.id } };
   } catch {
     return { success: false, error: "Failed to create opportunity" };
@@ -87,7 +86,6 @@ export async function updateOpportunity(id: string, data: Record<string, unknown
     });
 
     await logAudit(adminId, "UPDATE", "Opportunity", id);
-    await revalidatePublicPaths(["/opportunities", `/opportunities/${updated.slug}`]);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update opportunity" };
@@ -99,7 +97,6 @@ export async function deleteOpportunity(id: string): Promise<ActionResult> {
     const adminId = await getAdminId();
     await prisma.opportunity.update({ where: { id }, data: { deletedAt: new Date(), published: false } });
     await logAudit(adminId, "DELETE", "Opportunity", id);
-    await revalidatePublicPaths(["/opportunities"]);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete opportunity" };

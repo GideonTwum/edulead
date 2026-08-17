@@ -3,7 +3,8 @@
 import prisma from "@/lib/db";
 import { logAudit } from "@/lib/auth";
 import { getAdminId } from "./shared";
-import { revalidatePublicPaths, type ActionResult } from "./utils";
+import { revalidateTeamMember } from "@/lib/revalidation";
+import type { ActionResult } from "./utils";
 
 function slugify(value: string): string {
   return value
@@ -44,7 +45,7 @@ export async function createTeamMember(data: Record<string, unknown>): Promise<A
       },
     });
     await logAudit(adminId, "CREATE", "TeamMember", created.id);
-    await revalidatePublicPaths(["/team", `/team/${created.slug}`, "/about"]);
+    revalidateTeamMember(created.slug);
     return { success: true, data: { id: created.id } };
   } catch {
     return { success: false, error: "Failed to create team member" };
@@ -76,7 +77,7 @@ export async function updateTeamMember(id: string, data: Record<string, unknown>
       },
     });
     await logAudit(adminId, "UPDATE", "TeamMember", id);
-    await revalidatePublicPaths(["/team", `/team/${slug}`, `/team/${existing.slug}`, "/about"]);
+    revalidateTeamMember(slug, existing.slug);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update team member" };
@@ -87,13 +88,11 @@ export async function deleteTeamMember(id: string): Promise<ActionResult> {
   try {
     const adminId = await getAdminId();
     const existing = await prisma.teamMember.findUnique({ where: { id } });
+    if (!existing) return { success: false, error: "Team member not found" };
+
     await prisma.teamMember.delete({ where: { id } });
     await logAudit(adminId, "DELETE", "TeamMember", id);
-    await revalidatePublicPaths([
-      "/team",
-      ...(existing ? [`/team/${existing.slug}`] : []),
-      "/about",
-    ]);
+    revalidateTeamMember(existing.slug);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete team member" };

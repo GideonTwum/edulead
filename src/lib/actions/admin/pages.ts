@@ -3,8 +3,9 @@
 import prisma from "@/lib/db";
 import { logAudit } from "@/lib/auth";
 import { PageKey } from "@prisma/client";
+import { revalidatePageContentByKey } from "@/lib/revalidation";
 import { getAdminId } from "./shared";
-import { revalidatePublicPaths, type ActionResult } from "./utils";
+import type { ActionResult } from "./utils";
 
 export async function getPageContents(pageKey?: PageKey) {
   await getAdminId();
@@ -29,7 +30,7 @@ export async function updatePageContent(id: string, data: {
     const adminId = await getAdminId();
     const updated = await prisma.pageContent.update({ where: { id }, data });
     await logAudit(adminId, "UPDATE", "PageContent", id, { pageKey: updated.pageKey });
-    await revalidatePublicPaths(["/", "/about", "/join", "/contact"]);
+    revalidatePageContentByKey(updated.pageKey);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update page content" };
@@ -48,7 +49,7 @@ export async function createPageContent(data: {
     const adminId = await getAdminId();
     const created = await prisma.pageContent.create({ data });
     await logAudit(adminId, "CREATE", "PageContent", created.id);
-    await revalidatePublicPaths(["/"]);
+    revalidatePageContentByKey(created.pageKey);
     return { success: true, data: { id: created.id } };
   } catch {
     return { success: false, error: "Failed to create page content" };

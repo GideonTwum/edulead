@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Form, Input, Switch, Button, Card, Row, Col } from "antd";
 import { updateSiteSettings } from "@/lib/actions/admin/settings";
 import type { SiteSetting } from "@prisma/client";
@@ -13,14 +14,17 @@ interface SettingsFormProps {
 
 export function SettingsForm({ settings }: SettingsFormProps) {
   const message = useAdminMessage();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: Record<string, unknown>) => {
     setLoading(true);
     const result = await updateSiteSettings(values);
     setLoading(false);
-    if (result.success) message.success("Settings saved");
-    else message.error(result.error);
+    if (result.success) {
+      message.success("Settings saved");
+      router.refresh();
+    } else message.error(result.error);
   };
 
   return (

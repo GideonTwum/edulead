@@ -1,10 +1,17 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import prisma from "@/lib/db";
 import { requireAdmin, logAudit } from "@/lib/auth";
 import { generateUniqueSlug } from "@/lib/slug";
+import {
+  revalidatePublication,
+  revalidateSiteWideContent,
+  revalidateTeamMember,
+  revalidatePageContentByKey,
+} from "@/lib/revalidation";
 import type { ProgrammeStatus, ProgrammeCategory, ArticleStatus } from "@prisma/client";
+
+/** @deprecated Legacy admin actions — prefer modular files under src/lib/actions/admin/*. */
 
 export async function updateSiteSettings(data: Record<string, unknown>) {
   const { profile } = await requireAdmin();
@@ -14,7 +21,7 @@ export async function updateSiteSettings(data: Record<string, unknown>) {
     : await prisma.siteSetting.create({ data: data as never });
 
   await logAudit(profile.id, "UPDATE", "SiteSetting", settings.id);
-  revalidatePath("/", "layout");
+  revalidateSiteWideContent();
   return settings;
 }
 
@@ -22,7 +29,7 @@ export async function updatePageContent(id: string, data: Record<string, unknown
   const { profile } = await requireAdmin();
   const content = await prisma.pageContent.update({ where: { id }, data: data as never });
   await logAudit(profile.id, "UPDATE", "PageContent", id);
-  revalidatePath("/", "layout");
+  revalidatePageContentByKey(content.pageKey);
   return content;
 }
 
@@ -44,7 +51,6 @@ export async function createProgramme(data: {
   });
 
   await logAudit(profile.id, "CREATE", "Programme", programme.id);
-  revalidatePath("/programmes");
   return programme;
 }
 
@@ -52,8 +58,6 @@ export async function updateProgramme(id: string, data: Record<string, unknown>)
   const { profile } = await requireAdmin();
   const programme = await prisma.programme.update({ where: { id }, data: data as never });
   await logAudit(profile.id, "UPDATE", "Programme", id);
-  revalidatePath("/programmes");
-  revalidatePath(`/programmes/${programme.slug}`);
   return programme;
 }
 
@@ -61,7 +65,6 @@ export async function deleteProgramme(id: string) {
   const { profile } = await requireAdmin();
   await prisma.programme.update({ where: { id }, data: { deletedAt: new Date(), published: false } });
   await logAudit(profile.id, "DELETE", "Programme", id);
-  revalidatePath("/programmes");
 }
 
 export async function updateSubmissionStatus(id: string, status: "NEW" | "REVIEWED" | "CONTACTED" | "CLOSED", note?: string) {
@@ -101,15 +104,20 @@ export async function createArticle(data: {
   });
 
   await logAudit(profile.id, "CREATE", "Article", article.id);
-  revalidatePath("/publications");
+  revalidatePublication(article.slug);
   return article;
 }
 
 export async function updateArticle(id: string, data: Record<string, unknown>) {
   const { profile } = await requireAdmin();
+  const existing = await prisma.article.findFirst({ where: { id, deletedAt: null } });
   const article = await prisma.article.update({ where: { id }, data: data as never });
   await logAudit(profile.id, "UPDATE", "Article", id);
-  revalidatePath("/publications");
+  if (existing) {
+    revalidatePublication(article.slug, existing.slug);
+  } else {
+    revalidatePublication(article.slug);
+  }
   return article;
 }
 
@@ -138,24 +146,31 @@ export async function createTeamMember(data: {
     },
   });
   await logAudit(profile.id, "CREATE", "TeamMember", member.id);
-  revalidatePath("/team");
-  revalidatePath(`/team/${slug}`);
+  revalidateTeamMember(member.slug);
   return member;
 }
 
 export async function updateTeamMember(id: string, data: Record<string, unknown>) {
   const { profile } = await requireAdmin();
+  const existing = await prisma.teamMember.findUnique({ where: { id } });
   const member = await prisma.teamMember.update({ where: { id }, data: data as never });
   await logAudit(profile.id, "UPDATE", "TeamMember", id);
-  revalidatePath("/team");
+  if (existing) {
+    revalidateTeamMember(member.slug, existing.slug);
+  } else {
+    revalidateTeamMember(member.slug);
+  }
   return member;
 }
 
 export async function deleteTeamMember(id: string) {
   const { profile } = await requireAdmin();
+  const existing = await prisma.teamMember.findUnique({ where: { id } });
   await prisma.teamMember.delete({ where: { id } });
   await logAudit(profile.id, "DELETE", "TeamMember", id);
-  revalidatePath("/team");
+  if (existing) {
+    revalidateTeamMember(existing.slug);
+  }
 }
 
 export async function unsubscribeNewsletter(id: string) {

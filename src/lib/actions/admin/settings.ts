@@ -4,8 +4,9 @@ import prisma from "@/lib/db";
 import { logAudit } from "@/lib/auth";
 import { createServiceClient } from "@/lib/supabase/server";
 import { deleteStorageBackedAsset } from "@/lib/storage";
+import { revalidateSiteWideContent } from "@/lib/revalidation";
 import { getAdminId } from "./shared";
-import { revalidatePublicPaths, type ActionResult } from "./utils";
+import type { ActionResult } from "./utils";
 
 export async function getMediaAssets(folder?: string) {
   await getAdminId();
@@ -103,7 +104,7 @@ export async function updateSiteSettings(data: Record<string, unknown>): Promise
       await logAudit(adminId, "CREATE", "SiteSetting", created.id);
     }
 
-    await revalidatePublicPaths(["/"]);
+    revalidateSiteWideContent();
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update settings" };

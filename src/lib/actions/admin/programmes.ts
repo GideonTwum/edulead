@@ -5,7 +5,7 @@ import { logAudit } from "@/lib/auth";
 import { ProgrammeCategory, ProgrammeStatus } from "@prisma/client";
 import { generateUniqueSlug } from "@/lib/slug";
 import { getAdminId } from "./shared";
-import { parseDate, revalidatePublicPaths, type ActionResult } from "./utils";
+import { parseDate, type ActionResult } from "./utils";
 
 export async function getProgrammes() {
   await getAdminId();
@@ -59,7 +59,6 @@ export async function createProgramme(data: Record<string, unknown>): Promise<Ac
     });
 
     await logAudit(adminId, "CREATE", "Programme", created.id);
-    await revalidatePublicPaths(["/programmes", `/programmes/${slug}`]);
     return { success: true, data: { id: created.id } };
   } catch {
     return { success: false, error: "Failed to create programme" };
@@ -103,7 +102,6 @@ export async function updateProgramme(id: string, data: Record<string, unknown>)
     });
 
     await logAudit(adminId, "UPDATE", "Programme", id);
-    await revalidatePublicPaths(["/programmes", `/programmes/${updated.slug}`]);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update programme" };
@@ -115,7 +113,6 @@ export async function deleteProgramme(id: string): Promise<ActionResult> {
     const adminId = await getAdminId();
     await prisma.programme.update({ where: { id }, data: { deletedAt: new Date(), published: false } });
     await logAudit(adminId, "DELETE", "Programme", id);
-    await revalidatePublicPaths(["/programmes"]);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete programme" };

@@ -4,8 +4,9 @@ import prisma from "@/lib/db";
 import { logAudit } from "@/lib/auth";
 import { ArticleStatus } from "@prisma/client";
 import { generateUniqueSlug } from "@/lib/slug";
+import { revalidatePublication } from "@/lib/revalidation";
 import { getAdminId } from "./shared";
-import { parseDate, parseStringArray, revalidatePublicPaths, type ActionResult } from "./utils";
+import { parseDate, parseStringArray, type ActionResult } from "./utils";
 
 export async function getArticles() {
   await getAdminId();
@@ -60,7 +61,7 @@ export async function createArticle(data: Record<string, unknown>): Promise<Acti
     });
 
     await logAudit(adminId, "CREATE", "Article", created.id);
-    await revalidatePublicPaths(["/publications", `/publications/${slug}`, "/"]);
+    revalidatePublication(created.slug);
     return { success: true, data: { id: created.id } };
   } catch {
     return { success: false, error: "Failed to create article" };
@@ -70,6 +71,9 @@ export async function createArticle(data: Record<string, unknown>): Promise<Acti
 export async function updateArticle(id: string, data: Record<string, unknown>): Promise<ActionResult> {
   try {
     const adminId = await getAdminId();
+    const existing = await prisma.article.findFirst({ where: { id, deletedAt: null } });
+    if (!existing) return { success: false, error: "Article not found" };
+
     const title = data.title as string | undefined;
     const slug = title ? await generateUniqueSlug(title, "article", id) : undefined;
     const status = data.status as ArticleStatus | undefined;
@@ -103,7 +107,7 @@ export async function updateArticle(id: string, data: Record<string, unknown>): 
     });
 
     await logAudit(adminId, "UPDATE", "Article", id);
-    await revalidatePublicPaths(["/publications", `/publications/${updated.slug}`, "/"]);
+    revalidatePublication(updated.slug, existing.slug);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to update article" };
@@ -113,9 +117,12 @@ export async function updateArticle(id: string, data: Record<string, unknown>): 
 export async function deleteArticle(id: string): Promise<ActionResult> {
   try {
     const adminId = await getAdminId();
+    const existing = await prisma.article.findFirst({ where: { id, deletedAt: null } });
+    if (!existing) return { success: false, error: "Article not found" };
+
     await prisma.article.update({ where: { id }, data: { deletedAt: new Date(), status: ArticleStatus.ARCHIVED } });
     await logAudit(adminId, "DELETE", "Article", id);
-    await revalidatePublicPaths(["/publications", "/"]);
+    revalidatePublication(existing.slug);
     return { success: true };
   } catch {
     return { success: false, error: "Failed to delete article" };
