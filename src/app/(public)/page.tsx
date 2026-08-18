@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { HeroSection } from "@/components/public/HeroSection";
 import { SectionHeading } from "@/components/public/SectionHeading";
 import { FocusAreaCard } from "@/components/public/FocusAreaCard";
+import { AudienceCardsGrid } from "@/components/public/AudienceCardsGrid";
 import { EventCard } from "@/components/public/EventCard";
 import { ArticleCard } from "@/components/public/ArticleCard";
 import { JoinPathCard } from "@/components/public/JoinPathCard";
@@ -112,6 +113,18 @@ export default async function HomePage() {
               <FocusAreaCard key={area.title} {...area} />
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="who-edulead-is-for" className="section-padding bg-brand-off-white">
+        <div className="container-brand">
+          <SectionHeading
+            eyebrow="Our Audience"
+            title="Who EduLead Is For"
+            description="EduLead is designed for young people at different stages of their educational, professional and leadership journeys."
+            className="!mb-10"
+          />
+          <AudienceCardsGrid />
         </div>
       </section>
 
